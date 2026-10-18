@@ -75,16 +75,54 @@ struct SessionHooks {
     std::function<bool()> cancel;                      // true = stop as soon as possible
 };
 
-// Three significant digits, switching to SI prefixes so a 65 GB/s memory result
-// reads as "65.0 G" rather than "6.503e+10".  Shared with the GUI so both front
-// ends render numbers the same way.
+// A plain number with a few significant digits - no SI prefix.  Every unit this
+// tool reports already carries its magnitude ("KRay/s", "MiB/s", ...), so
+// prefixing the value as well read as a second magnitude on screen
+// ("201.9 k KRay/s" for 201.9 million rays/s).  A bare number next to the unit
+// is unambiguous and matches how AIDA64 prints its rows.  Shared with the GUI
+// so both front ends render numbers the same way.  (The `unit` argument is
+// kept so call sites read the same.)
 std::string format_value(double v, const std::string& unit = {});
+
+// Per-round statistics of a sustained run.  These are what the report block
+// prints under "--- sustained ---"; exposing them lets the GUI put the verdict
+// in the result table instead of leaving it in the log text only.
+enum class SustainVerdict {
+    Stable,
+    MildDecay,     // -5% < drift <= -2%
+    Throttling,    // drift <= -5%
+    Increasing,    // drift >= +5%
+};
+
+struct SustainSummary {
+    bool enough = false;      // false when there are fewer than 3 usable samples
+    size_t count = 0;
+    double mean = 0.0;
+    double sd = 0.0;
+    double sd_percent = 0.0;  // sd / mean, in percent
+    double min = 0.0;
+    double median = 0.0;
+    double p5 = 0.0;
+    double p95 = 0.0;
+    double head = 0.0;        // mean of the first third of the run
+    double tail = 0.0;        // mean of the last third
+    double drift_percent = 0.0;
+    SustainVerdict verdict = SustainVerdict::Stable;
+};
+
+SustainSummary summarize_samples(std::vector<double> const& samples);
+
+// The wording the CLI prints for a verdict (English).  The GUI has its own
+// Chinese text.
+const char* sustain_verdict_text(SustainVerdict verdict);
 
 // Runs the session.  Returns a process-style exit code:
 //   0  ok
 //   2  unknown workload in cfg.target
 //   3  at least one workload failed verification and scored 0
 //   4  cancelled through SessionHooks::cancel
+//   5  the session threw (allocation failure, ...) - only the CLI produces it,
+//      the GUI catches the exception itself so it can show the message
 int run_session(const RunConfig& cfg, const SessionHooks& hooks);
 
 class Benchmark;

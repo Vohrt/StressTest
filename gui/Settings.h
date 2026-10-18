@@ -14,8 +14,11 @@ struct Settings {
     double minutes = 20.0;
     int threads = 0;
     bool sustained = false;
-    bool accept_reference = false;
-    bool no_verify = false;
+    // Note: "record reference" and "skip verification" are deliberately NOT
+    // stored here.  Persisting either one would silently disable verification
+    // of every later session; the record action is a one-shot button with a
+    // confirmation dialog, and the skip-verification box starts unchecked on
+    // every launch.
     bool csv = false;
     std::string csv_path = "results.csv";
     // Selection: all_selected covers the default "everything checked" state,

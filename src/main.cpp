@@ -20,6 +20,7 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <exception>
 #include <fstream>
 #include <string>
 #include <vector>
@@ -62,7 +63,8 @@ void usage() {
         "  --mode sustained     repeat and sample until --minutes elapse\n"
         "  --seconds N          measurement length for single mode (default 15)\n"
         "  --minutes N          duration for sustained mode (default 20)\n"
-        "  --threads N          worker threads (default: all logical CPUs)\n"
+        "  --threads N          worker threads (default: all logical CPUs; values\n"
+        "                       above the logical core count are capped to it)\n"
         "  --calibration FILE   index calibration file (default calibration.txt)\n"
         "  --csv FILE           write per-round samples to FILE\n"
         "  --emit-calibration F write a calibration template for this machine\n"
@@ -216,9 +218,19 @@ int cli_main(int argc, char** argv) {
     cfg.reference_path = opt.reference_path;
 
     // Default hooks: the session prints to stdout/stderr exactly like the
-    // classic command line build.
+    // classic command line build.  A failure inside the session (an allocation
+    // that cannot be satisfied, for example) must end in a message and an exit
+    // code, not std::terminate.
     SessionHooks hooks;
-    return run_session(cfg, hooks);
+    try {
+        return run_session(cfg, hooks);
+    } catch (const std::exception& e) {
+        std::fprintf(stderr, "error: run failed: %s\n", e.what());
+        return 5;
+    } catch (...) {
+        std::fprintf(stderr, "error: run failed: unknown exception\n");
+        return 5;
+    }
 }
 
 } // namespace cst

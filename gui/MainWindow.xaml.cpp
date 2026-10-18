@@ -8,8 +8,11 @@
 #include "cst.h"      // all_benchmarks(), BenchInfo
 #include "session.h"  // cst::run_session, RunConfig, TestOutcome, format_value
 
+#include <winrt/Microsoft.UI.Interop.h>
 #include <winrt/Microsoft.UI.Xaml.Automation.h>
 
+#include <algorithm>
+#include <atomic>
 #include <cmath>
 #include <cstdio>
 #include <string>
@@ -29,6 +32,15 @@ namespace {
 // ---------------------------------------------------------------------------
 // Small UI helpers
 // ---------------------------------------------------------------------------
+
+// The control rows are two non-wrapping StackPanels, so the window must not go
+// below the width they need - otherwise the run controls (and the CSV row) are
+// clipped with no way to scroll to them.  The width is measured after the first
+// layout (see apply_minimum_size) and converted to the physical pixels the
+// AppWindow APIs use; these are the effective-pixel fallbacks used until then.
+constexpr double kFallbackToolbarWidth = 1140.0;  // effective px, measured on this host
+constexpr double kMinContentHeight = 430.0;       // effective px
+constexpr int kTitleBarAllowance = 40;            // effective px, plus frame
 
 // Column layout shared by the header and every test row, so they line up.
 Grid make_row_grid()
@@ -89,26 +101,57 @@ double number_or(double value, double fallback)
     return std::isnan(value) ? fallback : value;
 }
 
-// "±1.2%" volatility of a sustained run, from its per-round samples.
-std::wstring volatility_suffix(std::vector<double> const& samples)
+// The verdict of a sustained run in the GUI's language; the CLI prints its own
+// English text (cst::sustain_verdict_text).
+const wchar_t* verdict_text(cst::SustainVerdict verdict)
 {
-    if (samples.size() < 3) return {};
-    double mean = 0.0;
-    for (double v : samples) mean += v;
-    mean /= static_cast<double>(samples.size());
-    if (!(mean > 0.0)) return {};
-    double variance = 0.0;
-    for (double v : samples) variance += (v - mean) * (v - mean);
-    variance /= static_cast<double>(samples.size());
-    wchar_t buffer[64];
-    swprintf_s(buffer, L"（波动 ±%.1f%%）", std::sqrt(variance) / mean * 100.0);
+    switch (verdict) {
+    case cst::SustainVerdict::Throttling: return L"降频";
+    case cst::SustainVerdict::MildDecay: return L"轻微衰减";
+    case cst::SustainVerdict::Increasing: return L"上升（异常）";
+    default: return L"稳定";
+    }
+}
+
+// "（波动 ±0.6%，漂移 -0.26%，稳定）" appended to a sustained run's status.
+// Empty for a single measurement: fewer than three samples have no drift story.
+std::wstring sustain_suffix(std::vector<double> const& samples)
+{
+    const cst::SustainSummary s = cst::summarize_samples(samples);
+    if (!s.enough) return {};
+    wchar_t buffer[160];
+    swprintf_s(buffer, L"（波动 ±%.1f%%，漂移 %+.2f%%，%s）", s.sd_percent, s.drift_percent,
+               verdict_text(s.verdict));
     return buffer;
 }
 
-std::wstring index_text(double index)
+// The rest of the sustained picture as a tool tip on the status cell, so the
+// numbers the log prints (mean, p5/p95) are reachable without scrolling it.
+std::wstring sustain_tooltip(cst::TestOutcome const& outcome)
 {
+    const cst::SustainSummary s = cst::summarize_samples(outcome.samples);
+    if (!s.enough) return {};
+    wchar_t buffer[256];
+    swprintf_s(buffer,
+               L"样本 %zu 个 · 均值 %s %s（±%.2f%%）\np5 / p95：%s / %s %s\n"
+               L"漂移（首/末 1/3）：%+.2f%% → %s",
+               s.count, to_hstring(cst::format_value(s.mean, outcome.unit)).c_str(),
+               to_hstring(outcome.unit).c_str(), s.sd_percent,
+               to_hstring(cst::format_value(s.p5, outcome.unit)).c_str(),
+               to_hstring(cst::format_value(s.p95, outcome.unit)).c_str(),
+               to_hstring(outcome.unit).c_str(), s.drift_percent, verdict_text(s.verdict));
+    return buffer;
+}
+
+// The AIDA64 index column.  Without a real calibration entry (a row in
+// calibration.txt with an AIDA64 reference score) the "index" would just repeat
+// the raw throughput, so say 未校准 instead of dressing it up as a score.
+std::wstring index_text(cst::TestOutcome const& outcome)
+{
+    if (outcome.rejected) return L"0.0";
+    if (!outcome.calibrated) return L"未校准";
     wchar_t buffer[64];
-    swprintf_s(buffer, L"%.1f", index);
+    swprintf_s(buffer, L"%.1f", outcome.index);
     return buffer;
 }
 
@@ -127,10 +170,52 @@ MainWindow::MainWindow()
 
     build_test_rows();
 
+    // The thread count cannot usefully exceed the logical core count, and the
+    // per-thread working sets (96 MiB per worker in the memory tests) multiply
+    // by it - an extreme value used to be able to kill the process.  Cap the
+    // input itself so the spinner cannot even suggest otherwise.
+    ThreadsBox().Minimum(0.0);
+    ThreadsBox().Maximum(static_cast<double>(std::max(1, ci.logical_cores)));
+
+    // Pin the window minimum before restoring the saved size, so a size saved
+    // by an older version (or on a different monitor) cannot bring the clipped
+    // toolbars back.  OverlappedPresenter exposes the minimum as two
+    // IReference<int32_t> properties; passing an int uses IReference's
+    // converting constructor.
+    apply_minimum_size();
+
     // Restore the previous session's settings, then hook up the close handler
     // (so that closing without ever touching a control still saves state).
     apply_settings(gui::load_settings());
     Closed({ this, &MainWindow::OnClosed });
+
+    // The toolbars' real width is only known after the first layout pass (and
+    // it changes with the monitor's DPI scale), so refine the minimum then and
+    // grow the window if the restored size is too small.
+    if (auto content = Content().try_as<FrameworkElement>()) {
+        content.Loaded([this](IInspectable const&, RoutedEventArgs const&) {
+            ensure_minimum_size();
+            if (!root_changed_hooked_) {
+                if (auto root = Content().XamlRoot()) {
+                    root.Changed([this](XamlRoot const&, XamlRootChangedEventArgs const&) {
+                        ensure_minimum_size();
+                    });
+                    root_changed_hooked_ = true;
+                }
+            }
+        });
+    }
+
+    // Settings used to be written only when the window closed, so a crash or a
+    // forced kill lost them.  Save the easiest thing to lose - a resize or a
+    // move - as it happens; the run controls are saved when a run starts.
+    AppWindow().Changed(
+        [this](Microsoft::UI::Windowing::AppWindow const&,
+               Microsoft::UI::Windowing::AppWindowChangedEventArgs const& args) {
+            if (args.DidSizeChange() || args.DidPositionChange()) {
+                gui::save_settings(current_settings());
+            }
+        });
 
 #ifdef _DEBUG
     // A Debug build does not reproduce the recorded reference fingerprints
@@ -278,7 +363,7 @@ void MainWindow::OnRunAll(IInspectable const&, RoutedEventArgs const&)
 void MainWindow::OnStop(IInspectable const&, RoutedEventArgs const&)
 {
     if (!running_.load()) return;
-    cancel_.store(true);
+    cancel_state_->store(true);
     set_status(L"正在停止…（等待当前一轮结束）");
 }
 
@@ -312,26 +397,77 @@ void MainWindow::OnCsvToggled(IInspectable const&, RoutedEventArgs const&)
     CsvPathBox().IsEnabled(!running_.load() && is_checked(CsvCheck()));
 }
 
+// Recording a new golden reference overwrites the baseline every future run is
+// checked against, so it is a one-shot action with an explicit confirmation -
+// never a check box that a later session would find already ticked.  It is not
+// written to settings.ini either.
+fire_and_forget MainWindow::OnRecordReference(IInspectable const&, RoutedEventArgs const&)
+{
+    if (running_.load()) co_return;
+
+    std::string target;
+    for (std::string const& id : selected_ids()) {
+        if (!target.empty()) target += ',';
+        target += id;
+    }
+    if (target.empty()) {
+        set_status(L"没有选中任何测试：请先勾选要记录为参考的测试。");
+        co_return;
+    }
+
+    ContentDialog dialog;
+    dialog.XamlRoot(Content().XamlRoot());
+    dialog.Title(box_value(L"记录本次为参考？"));
+    dialog.PrimaryButtonText(L"运行并记录");
+    dialog.CloseButtonText(L"取消");
+    dialog.DefaultButton(ContentDialogButton::Close);
+    TextBlock body;
+    body.TextWrapping(TextWrapping::Wrap);
+    body.MaxWidth(460);
+    body.Text(L"将运行选中的测试，并把它们的输出指纹写入 reference.txt：\n\n"
+              L"· 只影响这次运行，之后不会自动重复；\n"
+              L"· 会覆盖这些测试已有的参考指纹；\n"
+              L"· 请只在确认系统稳定时记录。\n\n"
+              L"如果 CPU 在不稳定状态下被记录，坏指纹会成为基线，"
+              L"之后正常的结果反而会被判为失败。");
+    dialog.Content(body);
+
+    ContentDialogResult result = ContentDialogResult::None;
+    try {
+        result = co_await dialog.ShowAsync();
+    } catch (...) {
+        co_return;   // a dialog that cannot be shown must not start the run
+    }
+    if (result != ContentDialogResult::Primary) co_return;
+    start_run(target, /*record_reference=*/true);
+}
+
 void MainWindow::OnClosed(IInspectable const&, WindowEventArgs const&)
 {
     gui::save_settings(current_settings());
     alive_->store(false);
-    cancel_.store(true);
+    cancel_state_->store(true);
 }
 
 // ---------------------------------------------------------------------------
 // Running
 // ---------------------------------------------------------------------------
 
-void MainWindow::start_run(std::string const& target)
+void MainWindow::start_run(std::string const& target, bool record_reference)
 {
     bool expected = false;
     if (!running_.compare_exchange_strong(expected, true)) return;
     if (target.empty()) {
         running_.store(false);
-        set_status(L"没有选中任何测试：请勾选要运行的测试，或点击“全部运行”。");
+        set_status(record_reference
+                       ? L"没有选中任何测试：请先勾选要记录为参考的测试。"
+                       : L"没有选中任何测试：请勾选要运行的测试，或点击“全部运行”。");
         return;
     }
+
+    // Save what the user is looking at before the run starts; settings used to
+    // be written only on close, so a crash lost everything since the last one.
+    gui::save_settings(current_settings());
 
     cst::RunConfig config;
     config.target = target;
@@ -339,47 +475,79 @@ void MainWindow::start_run(std::string const& target)
     config.seconds = number_or(SecondsBox().Value(), 15.0);
     config.minutes = number_or(MinutesBox().Value(), 20.0);
     config.threads = static_cast<int>(number_or(ThreadsBox().Value(), 0.0));
-    config.accept_reference = is_checked(AcceptRefCheck());
+    // Both verification options are one-shot for this run only: the record
+    // flag comes from the confirmation dialog, and neither flag is persisted.
+    config.accept_reference = record_reference;
     config.no_verify = is_checked(NoVerifyCheck());
     if (is_checked(CsvCheck())) config.csv_path = to_string(CsvPathBox().Text());
 
-    cancel_.store(false);
-    reset_results();
+    // The number of workloads is known before the session starts, so the
+    // progress bar moves from the first round on - the session's own progress
+    // hook only fires after a workload has finished.
+    tests_total_ = target == "all"
+                       ? static_cast<int>(cst::all_benchmarks().size())
+                       : static_cast<int>(std::count(target.begin(), target.end(), ',')) + 1;
     tests_done_ = 0;
-    tests_total_ = 0;
     failures_ = 0;
+    cancel_state_ = std::make_shared<std::atomic<bool>>(false);
+    reset_results();
     update_progress(0.0);
     set_running(true);
 
-    // The session runs on its own thread; everything it reports is marshalled
-    // back to the UI thread through the window's dispatcher queue.
-    std::thread([this, config] {
-        cst::SessionHooks hooks;
-        hooks.log = [this](std::string const& text) {
-            post([this, text] { append_log(text); });
-        };
-        hooks.warn = [this](std::string const& text) {
-            post([this, text] { append_log(text); });
-        };
-        hooks.begin = [this](std::string const& id, std::string const& label) {
-            post([this, id, label] { on_begin(id, label); });
-        };
-        hooks.round = [this](int round, int rounds) {
-            post([this, round, rounds] { on_round(round, rounds); });
-        };
-        hooks.progress = [this](int done, int total) {
-            post([this, done, total] { on_progress(done, total); });
-        };
-        hooks.result = [this](cst::TestOutcome const& outcome) {
-            post([this, outcome] {
-                if (outcome.rejected) ++failures_;
-                on_result(outcome);
+    // The session runs on its own thread.  That thread never touches the window
+    // object itself: `self` is only copied around, and the member calls happen
+    // in lambdas that run on the UI thread where `post_local` re-checked
+    // `alive` - anything queued after the window closed is dropped.  The cancel
+    // flag is a shared_ptr the thread keeps alive on its own.
+    auto alive = alive_;
+    auto cancel = cancel_state_;
+    auto queue = DispatcherQueue();
+    MainWindow* self = this;   // copied, never dereferenced on the session thread
+    std::thread([self, config, alive, cancel, queue] {
+        const auto post_local = [alive, queue](std::function<void()> fn) {
+            if (!queue) return;
+            queue.TryEnqueue([alive, fn = std::move(fn)] {
+                if (!alive->load() || !fn) return;
+                fn();
             });
         };
-        hooks.cancel = [this] { return cancel_.load(); };
 
-        const int code = cst::run_session(config, hooks);
-        post([this, code] { on_finished(code); });
+        cst::SessionHooks hooks;
+        hooks.log = [self, post_local](std::string const& text) {
+            post_local([self, text] { self->append_log(text); });
+        };
+        hooks.warn = [self, post_local](std::string const& text) {
+            post_local([self, text] { self->append_log(text); });
+        };
+        hooks.begin = [self, post_local](std::string const& id, std::string const& label) {
+            post_local([self, id, label] { self->on_begin(id, label); });
+        };
+        hooks.round = [self, post_local](int round, int rounds) {
+            post_local([self, round, rounds] { self->on_round(round, rounds); });
+        };
+        hooks.progress = [self, post_local](int done, int total) {
+            post_local([self, done, total] { self->on_progress(done, total); });
+        };
+        hooks.result = [self, post_local](cst::TestOutcome const& outcome) {
+            post_local([self, outcome] {
+                if (outcome.rejected) ++self->failures_;
+                self->on_result(outcome);
+            });
+        };
+        hooks.cancel = [cancel] { return cancel->load(); };
+
+        int code = 5;
+        try {
+            code = cst::run_session(config, hooks);
+        } catch (std::exception const& e) {
+            const std::string message = e.what();
+            post_local([self, message] { self->on_run_error(message); });
+            return;
+        } catch (...) {
+            post_local([self] { self->on_run_error("unknown exception"); });
+            return;
+        }
+        post_local([self, code] { self->on_finished(code); });
     }).detach();
 }
 
@@ -426,21 +594,34 @@ void MainWindow::on_result(cst::TestOutcome const& outcome)
     for (TestRow& row : rows_) {
         if (row.id != outcome.id) continue;
         if (row.value) row.value.Text(to_hstring(cst::format_value(outcome.value, outcome.unit)));
-        if (row.index) row.index.Text(index_text(outcome.index));
+        if (row.index) {
+            row.index.Text(index_text(outcome));
+            // Uncalibrated rows say 未校准 instead of a number; dim them so
+            // they do not read as a score at a glance.
+            row.index.Opacity(outcome.calibrated ? 1.0 : 0.55);
+        }
         if (row.status) {
+            // Any old sustained tool tip belongs to the previous run.
+            ToolTipService::SetToolTip(row.status, nullptr);
             if (outcome.rejected) {
                 row.status.Text(outcome.digest_unstable ? L"✗ 输出不稳定（得分按 0 计）"
                                                         : L"✗ 校验失败（得分按 0 计）");
                 row.status.Foreground(status_brush(0xC6, 0x28, 0x28));
             } else if (outcome.reference_missing) {
-                row.status.Text(L"· 无参考记录（可勾选“记录本次为参考”）");
+                row.status.Text(L"· 无参考记录（可用“记录为参考…”重录）");
                 row.status.Foreground(status_brush(0xEF, 0x6C, 0x00));
             } else if (outcome.reference_params_changed) {
                 row.status.Text(L"· 参数与参考不同，不可比");
                 row.status.Foreground(status_brush(0xEF, 0x6C, 0x00));
             } else {
+                // The sustained verdict goes right next to the row it belongs
+                // to; the log pane keeps the full report.
                 row.status.Text((outcome.has_full_digest ? L"✓ 校验通过" : L"✓ 完成") +
-                                volatility_suffix(outcome.samples));
+                                sustain_suffix(outcome.samples));
+                const std::wstring tip = sustain_tooltip(outcome);
+                if (!tip.empty()) {
+                    ToolTipService::SetToolTip(row.status, box_value(hstring(tip)));
+                }
                 row.status.Foreground(status_brush(0x2E, 0x7D, 0x32));
             }
         }
@@ -470,9 +651,45 @@ void MainWindow::on_finished(int exit_code)
     case 2:
         set_status(L"错误：测试目标无效。");
         break;
+    case 5:
+        set_status(L"错误：运行失败（详见日志）。");
+        break;
     default:
         set_status(L"结束（退出码 " + std::to_wstring(exit_code) + L"）。");
         break;
+    }
+}
+
+// The session threw (allocation failure, ...).  Without this it would have
+// killed the process from a detached thread, with no message anywhere.
+void MainWindow::on_run_error(std::string const& message)
+{
+    running_.store(false);
+    set_running(false);
+    update_progress(1.0);
+    append_log("error: run session failed: " + message + "\n");
+    const hstring wide = to_hstring(message);
+    set_status(std::wstring(L"运行失败：") + std::wstring(wide.c_str()));
+    show_error_dialog(wide);
+}
+
+fire_and_forget MainWindow::show_error_dialog(hstring message)
+{
+    ContentDialog dialog;
+    dialog.XamlRoot(Content().XamlRoot());
+    dialog.Title(box_value(L"运行失败"));
+    TextBlock body;
+    body.TextWrapping(TextWrapping::Wrap);
+    body.MaxWidth(460);
+    body.Text(message);
+    dialog.Content(body);
+    dialog.CloseButtonText(L"确定");
+    dialog.DefaultButton(ContentDialogButton::Close);
+    try {
+        co_await dialog.ShowAsync();
+    } catch (...) {
+        // Nothing left to report the failure to - the log and the status line
+        // already carry it.
     }
 }
 
@@ -500,7 +717,7 @@ void MainWindow::set_running(bool running)
     StopButton().IsEnabled(running);
     SingleRadio().IsEnabled(!running);
     SustainedRadio().IsEnabled(!running);
-    AcceptRefCheck().IsEnabled(!running);
+    RecordRefButton().IsEnabled(!running);
     NoVerifyCheck().IsEnabled(!running);
     CsvCheck().IsEnabled(!running);
     ThreadsBox().IsEnabled(!running);
@@ -536,14 +753,63 @@ void MainWindow::append_log(std::string const& text)
     LogScroll().ChangeView(nullptr, LogScroll().ScrollableHeight(), nullptr);
 }
 
-void MainWindow::post(std::function<void()> fn)
+// ---------------------------------------------------------------------------
+// Minimum window size
+// ---------------------------------------------------------------------------
+
+// Effective pixels per physical pixel for the window (1.25 on a 125% display).
+// XamlRoot is not available until the first layout, so fall back to the DPI the
+// window was created with.
+double MainWindow::rasterization_scale()
 {
-    auto queue = DispatcherQueue();
-    if (!queue) return;
-    queue.TryEnqueue([fn] {
-        if (!fn) return;
-        fn();
-    });
+    if (auto content = Content()) {
+        if (auto root = content.XamlRoot()) {
+            const double scale = root.RasterizationScale();
+            if (scale > 0.0) return scale;
+        }
+    }
+    const HWND hwnd = winrt::Microsoft::UI::GetWindowFromWindowId(AppWindow().Id());
+    const UINT dpi = hwnd ? GetDpiForWindow(hwnd) : 96u;
+    return dpi >= 48u ? dpi / 96.0 : 1.0;
+}
+
+// Recomputes the preferred minimum size in the physical pixels AppWindow speaks.
+// The toolbars are non-wrapping, so below this width their right-hand controls
+// (the thread-count hint, the CSV path, 全选/全不选) would be clipped - which is
+// exactly what happened when the minimum was a fixed number that ignored the
+// display scale.
+void MainWindow::apply_minimum_size()
+{
+    const double scale = rasterization_scale();
+    int width = static_cast<int>(std::ceil(kFallbackToolbarWidth * scale));
+    int height = static_cast<int>(std::ceil((kMinContentHeight + kTitleBarAllowance) * scale));
+
+    if (RunRow() && OptionsRow()) {
+        const double rows = std::max(RunRow().DesiredSize().Width, OptionsRow().DesiredSize().Width);
+        if (rows > 0.0) {
+            // The desired width excludes the page's 16 px padding on both sides;
+            // a few physical pixels cover the window frame.
+            width = static_cast<int>(std::ceil((rows + 32.0) * scale)) + 8;
+        }
+    }
+
+    min_window_width_ = width;
+    min_window_height_ = height;
+    if (auto presenter =
+            AppWindow().Presenter().try_as<Microsoft::UI::Windowing::OverlappedPresenter>()) {
+        presenter.PreferredMinimumWidth(width);
+        presenter.PreferredMinimumHeight(height);
+    }
+}
+
+void MainWindow::ensure_minimum_size()
+{
+    apply_minimum_size();
+    const auto size = AppWindow().Size();
+    if (size.Width < min_window_width_ || size.Height < min_window_height_) {
+        AppWindow().Resize(winrt::Windows::Graphics::SizeInt32{
+            std::max(size.Width, min_window_width_), std::max(size.Height, min_window_height_)});
+    }
 }
 
 // ---------------------------------------------------------------------------
@@ -554,11 +820,12 @@ void MainWindow::apply_settings(gui::Settings const& settings)
 {
     SecondsBox().Value(settings.seconds);
     MinutesBox().Value(settings.minutes);
-    ThreadsBox().Value(settings.threads);
+    ThreadsBox().Value(std::clamp(settings.threads, 0, static_cast<int>(ThreadsBox().Maximum())));
     SustainedRadio().IsChecked(settings.sustained);
     SingleRadio().IsChecked(!settings.sustained);
-    AcceptRefCheck().IsChecked(settings.accept_reference);
-    NoVerifyCheck().IsChecked(settings.no_verify);
+    // "记录为参考" and "跳过校验" are deliberately not restored - both are
+    // one-shot options (see Settings.h); a stale ini file cannot switch
+    // verification off.
     CsvCheck().IsChecked(settings.csv);
     CsvPathBox().Text(to_hstring(settings.csv_path));
 
@@ -577,10 +844,11 @@ void MainWindow::apply_settings(gui::Settings const& settings)
         }
     }
 
-    if (settings.window_width >= 640 && settings.window_height >= 480) {
-        AppWindow().Resize(winrt::Windows::Graphics::SizeInt32{ settings.window_width,
-                                                                settings.window_height });
-    }
+    // A size saved by an older version (or a hand-edited ini) could be smaller
+    // than the toolbars need; clamp instead of restoring it and clipping the UI.
+    const int width = std::max(settings.window_width, min_window_width_);
+    const int height = std::max(settings.window_height, min_window_height_);
+    AppWindow().Resize(winrt::Windows::Graphics::SizeInt32{ width, height });
 
     OnModeChanged(nullptr, nullptr);
     OnCsvToggled(nullptr, nullptr);
@@ -593,8 +861,6 @@ gui::Settings MainWindow::current_settings()
     settings.minutes = number_or(MinutesBox().Value(), 20.0);
     settings.threads = static_cast<int>(number_or(ThreadsBox().Value(), 0.0));
     settings.sustained = is_checked(SustainedRadio());
-    settings.accept_reference = is_checked(AcceptRefCheck());
-    settings.no_verify = is_checked(NoVerifyCheck());
     settings.csv = is_checked(CsvCheck());
     settings.csv_path = to_string(CsvPathBox().Text());
 

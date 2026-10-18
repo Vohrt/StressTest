@@ -4,6 +4,8 @@
 #include <atomic>
 #include <chrono>
 #include <cstring>
+#include <exception>
+#include <mutex>
 #include <thread>
 
 #ifdef _WIN32
@@ -154,8 +156,23 @@ void run_workers(int threads, const std::function<void(int)>& body) {
     }
     std::vector<std::thread> pool;
     pool.reserve(static_cast<size_t>(threads));
-    for (int i = 0; i < threads; ++i) pool.emplace_back([&body, i] { body(i); });
+    // An exception escaping a worker thread would call std::terminate and kill
+    // the process without a word.  Capture the first one and rethrow it on the
+    // calling thread, where the session can report it.
+    std::mutex error_mutex;
+    std::exception_ptr error;
+    for (int i = 0; i < threads; ++i) {
+        pool.emplace_back([&body, i, &error, &error_mutex] {
+            try {
+                body(i);
+            } catch (...) {
+                std::lock_guard<std::mutex> lock(error_mutex);
+                if (!error) error = std::current_exception();
+            }
+        });
+    }
     for (auto& t : pool) t.join();
+    if (error) std::rethrow_exception(error);
 }
 
 void pin_thread_to_processor(int logical_index) {

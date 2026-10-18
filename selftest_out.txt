@@ -8,20 +8,20 @@
   checkmate prefixes  : 210 (expect 210)
   checkmate 16x16 pruned solver: 14772512 solutions
   checkmate 16x16 repeated : 14772512
-  photoworxx 10 stages: 204.42 ms (4096x3072 images), digest 10b6f211dd65798a
-    stage SWRandom     5.41 ms     2325.0 Mpx/s (1 thread)
-    stage Rot90       10.50 ms      598.9 Mpx/s (1 thread)
-    stage Rot180       0.86 ms     7314.8 Mpx/s (1 thread)
-    stage Diff         0.71 ms     5878.5 Mpx/s (1 thread)
-    stage RGB2YUV     10.96 ms      574.0 Mpx/s (1 thread)
-    stage VP8YUV      10.94 ms      575.0 Mpx/s (1 thread)
-    stage Pattern      4.40 ms     2860.6 Mpx/s (1 thread)
-    stage Access       2.36 ms     5337.4 Mpx/s (1 thread)
-    stage Fill         0.59 ms    21327.0 Mpx/s (1 thread)
-    stage Move         0.95 ms     6603.8 Mpx/s (1 thread)
-  per-stage rates (elapsed 0.505 s, 2 threads):
-    SWRandom    13691.5 MPixel/s
-    Rot90        2489.4 MPixel/s
+  photoworxx 10 stages: 205.51 ms (4096x3072 images), digest 10b6f211dd65798a
+    stage SWRandom     5.44 ms     2311.4 Mpx/s (1 thread)
+    stage Rot90       10.64 ms      591.3 Mpx/s (1 thread)
+    stage Rot180       0.83 ms     7611.2 Mpx/s (1 thread)
+    stage Diff         0.66 ms     6335.8 Mpx/s (1 thread)
+    stage RGB2YUV     10.97 ms      573.7 Mpx/s (1 thread)
+    stage VP8YUV      10.98 ms      573.0 Mpx/s (1 thread)
+    stage Pattern      4.40 ms     2857.9 Mpx/s (1 thread)
+    stage Access       2.34 ms     5367.0 Mpx/s (1 thread)
+    stage Fill         0.59 ms    21280.1 Mpx/s (1 thread)
+    stage Move         0.96 ms     6541.3 Mpx/s (1 thread)
+  per-stage rates (elapsed 0.508 s, 2 threads):
+    SWRandom    13753.0 MPixel/s
+    Rot90        2416.1 MPixel/s
     Rot180          0.0 MPixel/s
     Diff            0.0 MPixel/s
     RGB2YUV         0.0 MPixel/s
@@ -30,8 +30,8 @@
     Access          0.0 MPixel/s
     Fill            0.0 MPixel/s
     Move            0.0 MPixel/s
-    sum         16180.9 MPixel/s
-  [photoworxx] unit work = 5788139520 / 2390753280 units, digest 10b6f211dd65798a
+    sum         16169.0 MPixel/s
+  [photoworxx] unit work = 5851054080 / 2359296000 units, digest 10b6f211dd65798a
   [queen] unit work = 3628800 / 3628800 units, digest 9469b7ab84c6ad5e
-  [checkmate] unit work = 302333952 / 305725440 units, digest 18d3f0bbe960a625
+  [checkmate] unit work = 309657600 / 311574528 units, digest 18d3f0bbe960a625
 image selftest: PASS (0)

@@ -34,6 +34,11 @@ bool Calibration::load(const std::string& path) {
         while (!rest.empty() && (rest.front() == ' ' || rest.front() == '\t')) rest.erase(rest.begin());
         e.unit = rest;
         if (e.scale <= 0.0) continue;
+        // A row without an AIDA64 reference is a template line - that is
+        // exactly what `--emit-calibration` writes (scale 1.0, reference 0.0).
+        // Loading it would make the "AIDA64 index" a silently renamed copy of
+        // the raw throughput; require a real reference score instead.
+        if (!(e.reference > 0.0)) continue;
         entries[key] = e;
     }
     return true;

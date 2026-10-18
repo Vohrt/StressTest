@@ -46,6 +46,10 @@ namespace winrt::CpuStressTestGui::implementation
                            winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
         void OnCsvToggled(winrt::Windows::Foundation::IInspectable const&,
                           winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
+        // "记录为参考…": asks for confirmation, then re-records the fingerprints
+        // of the selected workloads for this one run only.
+        winrt::fire_and_forget OnRecordReference(winrt::Windows::Foundation::IInspectable const&,
+                                                 winrt::Microsoft::UI::Xaml::RoutedEventArgs const&);
         void OnClosed(winrt::Windows::Foundation::IInspectable const&,
                       winrt::Microsoft::UI::Xaml::WindowEventArgs const&);
 
@@ -55,26 +59,40 @@ namespace winrt::CpuStressTestGui::implementation
         gui::Settings current_settings();
         std::vector<std::string> selected_ids() const;
 
-        void start_run(std::string const& target);
+        void start_run(std::string const& target, bool record_reference = false);
         void set_running(bool running);
         void reset_results();
 
-        // Session callbacks, always executed on the UI thread by post().
+        // Session callbacks, always executed on the UI thread through the
+        // dispatcher queue (see start_run).
         void on_begin(std::string const& id, std::string const& label);
         void on_round(int round, int rounds);
         void on_progress(int done, int total);
         void on_result(cst::TestOutcome const& outcome);
         void on_finished(int exit_code);
+        void on_run_error(std::string const& message);
 
         void append_log(std::string const& text);
         void set_status(std::wstring const& text);
         void update_progress(double value);
-        void post(std::function<void()> fn);
+        winrt::fire_and_forget show_error_dialog(winrt::hstring message);
+
+        // Minimum window size: measured from the toolbar rows (see the .cpp).
+        void apply_minimum_size();
+        void ensure_minimum_size();
+        double rasterization_scale();
 
         std::vector<TestRow> rows_;
         std::shared_ptr<std::atomic<bool>> alive_ = std::make_shared<std::atomic<bool>>(true);
-        std::atomic<bool> cancel_{ false };
+        // The cancel flag is thrown away and re-created by every run, and the
+        // session thread keeps the shared_ptr it started with - so closing the
+        // window mid-run can never leave that thread touching freed state.
+        std::shared_ptr<std::atomic<bool>> cancel_state_ =
+            std::make_shared<std::atomic<bool>>(false);
         std::atomic<bool> running_{ false };
+        int min_window_width_ = 0;    // physical pixels, recomputed on DPI change
+        int min_window_height_ = 0;
+        bool root_changed_hooked_ = false;
         std::wstring current_label_;
         std::string log_buffer_;             // UI thread only
         int tests_done_ = 0;

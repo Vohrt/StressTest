@@ -20,7 +20,7 @@
         <TextBlock x:Name="SysInfoText" Grid.Row="0" TextWrapping="Wrap" Opacity="0.8" FontSize="12" />
 
         <StackPanel Grid.Row="1" Spacing="6">
-            <StackPanel Orientation="Horizontal" Spacing="8">
+            <StackPanel x:Name="RunRow" Orientation="Horizontal" Spacing="8">
                 <Button x:Name="RunButton" Content="运行选中" Click="OnRunSelected" />
                 <Button x:Name="RunAllButton" Content="全部运行" Click="OnRunAll" />
                 <Button x:Name="StopButton" Content="停止" IsEnabled="False" Click="OnStop" />
@@ -39,10 +39,10 @@
                 <TextBlock Text="线程" VerticalAlignment="Center" />
                 <NumberBox x:Name="ThreadsBox" Value="0" Minimum="0" Maximum="1024"
                            SpinButtonPlacementMode="Compact" Width="118" />
-                <TextBlock Text="(0 = 全部逻辑核心)" VerticalAlignment="Center" Opacity="0.7" FontSize="12" />
+                <TextBlock x:Name="ThreadsHintText" Text="(0 = 全部逻辑核心)" VerticalAlignment="Center" Opacity="0.7" FontSize="12" />
             </StackPanel>
-            <StackPanel Orientation="Horizontal" Spacing="12">
-                <CheckBox x:Name="AcceptRefCheck" Content="记录本次为参考" />
+            <StackPanel x:Name="OptionsRow" Orientation="Horizontal" Spacing="12">
+                <Button x:Name="RecordRefButton" Content="记录为参考…" Click="OnRecordReference" />
                 <CheckBox x:Name="NoVerifyCheck" Content="跳过校验" />
                 <CheckBox x:Name="CsvCheck" Content="写出 CSV" Checked="OnCsvToggled" Unchecked="OnCsvToggled" />
                 <TextBox x:Name="CsvPathBox" Text="results.csv" Width="240" IsEnabled="False" />
@@ -82,7 +82,8 @@
                 <Border Grid.Row="1" BorderThickness="1" CornerRadius="4"
                         BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
                         Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
-                    <ScrollViewer x:Name="LogScroll" VerticalScrollBarVisibility="Auto" Padding="8">
+                    <ScrollViewer x:Name="LogScroll" VerticalScrollBarVisibility="Auto"
+                                  HorizontalScrollBarVisibility="Auto" Padding="8">
                         <TextBlock x:Name="LogText" FontFamily="Consolas" FontSize="12"
                                    TextWrapping="NoWrap" IsTextSelectionEnabled="True" LineHeight="16" />
                     </ScrollViewer>

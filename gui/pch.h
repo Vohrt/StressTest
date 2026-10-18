@@ -1,5 +1,8 @@
 #pragma once
 
+// The Windows headers define min()/max() macros that would break
+// std::min/std::max/std::clamp in the WinUI sources.
+#define NOMINMAX
 #include <windows.h>
 #include <shellapi.h>
 #include <unknwn.h>

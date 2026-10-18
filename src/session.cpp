@@ -101,6 +101,13 @@ MeasureResult measure(Benchmark* bench, const RunConfig& cfg) {
     int threads = cfg.threads > 0 ? cfg.threads
                                   : (info.default_threads > 0 ? info.default_threads
                                                               : cpu_info().logical_cores);
+    // Never start more workers than the machine has logical processors.  The
+    // per-thread working sets multiply by the thread count (96 MiB per worker
+    // for the memory tests), the workload model gives every worker its own
+    // slice, and AIDA64's own selection stops at the logical core count - so a
+    // larger number buys nothing but can exhaust memory.  run_session() warns
+    // when this clamps a value the caller asked for.
+    threads = std::min(threads, std::max(1, cpu_info().logical_cores));
     threads = std::max(1, threads);
     result.threads = threads;
 
@@ -298,47 +305,26 @@ void report(Benchmark* bench, const RunConfig& cfg, const MeasureResult& m,
               m.digest_ok ? "identical in every repetition" : "CHANGED - result unstable!");
     }
 
-    if (sustained && m.rounds.size() > 2) {
+    if (sustained) {
         std::vector<double> vals;
         vals.reserve(m.rounds.size());
         for (const auto& r : m.rounds) vals.push_back(r.value);
-        const double mean = [&] {
-            double s = 0;
-            for (double v : vals) s += v;
-            return s / vals.size();
-        }();
-        double var = 0;
-        for (double v : vals) var += (v - mean) * (v - mean);
-        var /= vals.size();
-        const double sd = std::sqrt(var);
-
-        // Drift: compare the first and last third of the run.
-        const size_t third = std::max<size_t>(1, vals.size() / 3);
-        double head = 0, tail = 0;
-        for (size_t i = 0; i < third; ++i) head += vals[i];
-        for (size_t i = vals.size() - third; i < vals.size(); ++i) tail += vals[i];
-        head /= third;
-        tail /= third;
-        const double drift = head > 0 ? (tail - head) / head * 100.0 : 0.0;
-
-        emit("  --- sustained ---\n");
-        emitf("  samples       : %zu\n", vals.size());
-        emitf("  min / median  : %s / %s %s\n",
-              format_value(percentile(vals, 0.0), info.unit).c_str(),
-              format_value(percentile(vals, 0.5), info.unit).c_str(), info.unit.c_str());
-        emitf("  mean +- sd    : %s +- %s %s (%.2f%%)\n", format_value(mean, info.unit).c_str(),
-              format_value(sd, info.unit).c_str(),
-              info.unit.c_str(), mean > 0 ? sd / mean * 100.0 : 0.0);
-        emitf("  p5 / p95      : %s / %s\n",
-              format_value(percentile(vals, 0.05), info.unit).c_str(),
-              format_value(percentile(vals, 0.95), info.unit).c_str());
-        emitf("  first/last 1/3: %s -> %s (%+.2f%% drift)\n", format_value(head, info.unit).c_str(),
-              format_value(tail, info.unit).c_str(), drift);
-        const char* verdict = "stable";
-        if (drift <= -5.0) verdict = "THROTTLING (throughput falls over the run)";
-        else if (drift <= -2.0) verdict = "mild decay";
-        else if (drift >= 5.0) verdict = "increasing (unusual: check background load)";
-        emitf("  verdict       : %s\n", verdict);
+        const SustainSummary s = summarize_samples(vals);
+        if (s.enough) {
+            emit("  --- sustained ---\n");
+            emitf("  samples       : %zu\n", s.count);
+            emitf("  min / median  : %s / %s %s\n",
+                  format_value(s.min, info.unit).c_str(),
+                  format_value(s.median, info.unit).c_str(), info.unit.c_str());
+            emitf("  mean +- sd    : %s +- %s %s (%.2f%%)\n", format_value(s.mean, info.unit).c_str(),
+                  format_value(s.sd, info.unit).c_str(), info.unit.c_str(), s.sd_percent);
+            emitf("  p5 / p95      : %s / %s\n",
+                  format_value(s.p5, info.unit).c_str(),
+                  format_value(s.p95, info.unit).c_str());
+            emitf("  first/last 1/3: %s -> %s (%+.2f%% drift)\n", format_value(s.head, info.unit).c_str(),
+                  format_value(s.tail, info.unit).c_str(), s.drift_percent);
+            emitf("  verdict       : %s\n", sustain_verdict_text(s.verdict));
+        }
     }
 }
 
@@ -364,41 +350,71 @@ std::string describe_reference(const ReferenceCheck& ref) {
 
 } // namespace
 
-// Three significant digits, switching to SI prefixes so a 65 GB/s memory result
-// reads as "65.0 G" rather than "6.503e+10".  Shared with the GUI so both front
-// ends render numbers the same way.
+// A plain number with a few significant digits - no SI prefix.  Every unit this
+// tool reports already carries its magnitude ("KRay/s", "MiB/s", ...), so
+// prefixing the value as well read as a second magnitude on screen
+// ("201.9 k KRay/s" for 201.9 million rays/s).  A bare number next to the unit
+// is unambiguous and matches how AIDA64 prints its rows.  Shared with the GUI
+// so both front ends render numbers the same way.
 std::string format_value(double v, const std::string& unit) {
-    // A bare 'ns' latency figure should not gain an SI prefix.
-    if (unit == "ns") {
-        char b[64];
-        std::snprintf(b, sizeof(b), "%.4g", v);
-        return b;
-    }
+    (void)unit;   // kept in the signature so every call site reads the same
     if (!std::isfinite(v)) return "n/a";
-    const double a = std::fabs(v);
-    static const char* kPrefix[] = {"", "k", "M", "G", "T", "P"};
-    int idx = 0;
-    double scaled = v;
-    while (std::fabs(scaled) >= 1000.0 && idx < 5) {
-        scaled /= 1000.0;
-        ++idx;
-    }
-    if (a != 0.0 && a < 1.0) {
-        while (std::fabs(scaled) < 1.0 && idx > 0) {
-            scaled *= 1000.0;
-            --idx;
-        }
-    }
     char buf[64];
-    std::snprintf(buf, sizeof(buf), "%.4g %s", scaled, kPrefix[idx]);
-    std::string s(buf);
-    // "%.4g" already gives sign/exponent form when needed; trim the space when
-    // there is no prefix so plain numbers stay compact.
-    if (idx == 0 && s.size() > 1) {
-        const size_t space = s.find(' ');
-        if (space != std::string::npos) s = s.substr(0, space);
-    }
+    const double a = std::fabs(v);
+    if (a >= 1000.0) std::snprintf(buf, sizeof(buf), "%.0f", v);
+    else if (a >= 10.0) std::snprintf(buf, sizeof(buf), "%.1f", v);
+    else if (a >= 1.0) std::snprintf(buf, sizeof(buf), "%.2f", v);
+    else if (a > 0.0) std::snprintf(buf, sizeof(buf), "%.4g", v);
+    else std::snprintf(buf, sizeof(buf), "0");
+    return buf;
+}
+
+SustainSummary summarize_samples(std::vector<double> const& samples) {
+    SustainSummary s;
+    if (samples.size() < 3) return s;
+
+    double mean = 0.0;
+    for (double v : samples) mean += v;
+    mean /= static_cast<double>(samples.size());
+    if (!(mean > 0.0)) return s;
+
+    double var = 0.0;
+    for (double v : samples) var += (v - mean) * (v - mean);
+    var /= static_cast<double>(samples.size());
+
+    // Drift: compare the first and last third of the run.
+    const size_t third = std::max<size_t>(1, samples.size() / 3);
+    double head = 0.0, tail = 0.0;
+    for (size_t i = 0; i < third; ++i) head += samples[i];
+    for (size_t i = samples.size() - third; i < samples.size(); ++i) tail += samples[i];
+    head /= static_cast<double>(third);
+    tail /= static_cast<double>(third);
+
+    s.enough = true;
+    s.count = samples.size();
+    s.mean = mean;
+    s.sd = std::sqrt(var);
+    s.sd_percent = s.sd / mean * 100.0;
+    s.min = percentile(samples, 0.0);
+    s.median = percentile(samples, 0.5);
+    s.p5 = percentile(samples, 0.05);
+    s.p95 = percentile(samples, 0.95);
+    s.head = head;
+    s.tail = tail;
+    s.drift_percent = head > 0.0 ? (tail - head) / head * 100.0 : 0.0;
+    if (s.drift_percent <= -5.0) s.verdict = SustainVerdict::Throttling;
+    else if (s.drift_percent <= -2.0) s.verdict = SustainVerdict::MildDecay;
+    else if (s.drift_percent >= 5.0) s.verdict = SustainVerdict::Increasing;
     return s;
+}
+
+const char* sustain_verdict_text(SustainVerdict verdict) {
+    switch (verdict) {
+    case SustainVerdict::Throttling: return "THROTTLING (throughput falls over the run)";
+    case SustainVerdict::MildDecay: return "mild decay";
+    case SustainVerdict::Increasing: return "increasing (unusual: check background load)";
+    default: return "stable";
+    }
 }
 
 std::vector<Benchmark*> resolve_targets(const std::string& target) {
@@ -446,13 +462,18 @@ int run_session(const RunConfig& cfg, const SessionHooks& hooks) {
 
     const bool sustained = cfg.sustained;
     const CpuInfo& ci = cpu_info();
+    if (cfg.threads > ci.logical_cores) {
+        warnf("warning: --threads %d exceeds the %d logical CPUs of this machine; using %d\n",
+              cfg.threads, ci.logical_cores, ci.logical_cores);
+    }
     emitf("CpuStressTest  |  %s\n", ci.brand.c_str());
     emitf("  %d physical / %d logical cores  |  ISA: %s\n", ci.physical_cores,
           ci.logical_cores, ci.isa_summary().c_str());
     emitf("  mode: %s", sustained ? "sustained" : "single");
     if (sustained) emitf(" (%.1f minutes)", cfg.minutes);
     else emitf(" (%.1f seconds)", cfg.seconds);
-    emitf("  |  threads: %d\n", cfg.threads > 0 ? cfg.threads : ci.logical_cores);
+    emitf("  |  threads: %d\n", cfg.threads > 0 ? std::min(cfg.threads, ci.logical_cores)
+                                               : ci.logical_cores);
     if (!cfg.no_verify) {
         emitf("  verification: on (%zu recorded reference%s from %s)\n", refs.size(),
               refs.size() == 1 ? "" : "s", cfg.reference_path.c_str());

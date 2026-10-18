@@ -9,6 +9,11 @@
 //
 // index = measured_value * scale.  Scale is chosen so that on the reference
 // machine the index equals the AIDA64 score that was measured for that machine.
+//
+// A row with no reference (0.0) is a template line and is ignored: it would
+// otherwise report the raw throughput under the name "AIDA64 index".  The
+// front ends then show the index as uncalibrated instead, so it is never
+// mistaken for a score AIDA64 would produce.
 #pragma once
 
 #include <map>

@@ -78,8 +78,6 @@ Settings load_settings() {
         else if (key == "minutes") s.minutes = to_double(value, s.minutes);
         else if (key == "threads") s.threads = to_int(value, s.threads);
         else if (key == "sustained") s.sustained = to_bool(value, s.sustained);
-        else if (key == "accept_reference") s.accept_reference = to_bool(value, s.accept_reference);
-        else if (key == "no_verify") s.no_verify = to_bool(value, s.no_verify);
         else if (key == "csv") s.csv = to_bool(value, s.csv);
         else if (key == "csv_path") s.csv_path = value;
         else if (key == "all_selected") s.all_selected = to_bool(value, s.all_selected);
@@ -97,8 +95,6 @@ void save_settings(Settings const& s) {
     out << "minutes=" << s.minutes << "\n";
     out << "threads=" << s.threads << "\n";
     out << "sustained=" << (s.sustained ? 1 : 0) << "\n";
-    out << "accept_reference=" << (s.accept_reference ? 1 : 0) << "\n";
-    out << "no_verify=" << (s.no_verify ? 1 : 0) << "\n";
     out << "csv=" << (s.csv ? 1 : 0) << "\n";
     out << "csv_path=" << s.csv_path << "\n";
     out << "window_width=" << s.window_width << "\n";

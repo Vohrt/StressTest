@@ -169,10 +169,22 @@ cst run <test|all> [options]
 One executable carries both front ends: started without arguments (or with
 `gui`) it opens the WinUI window, started with arguments it behaves like the
 classic command line tool. In command line mode it attaches to the console it
-was started from, and pipes or file redirection work as usual
-(`cst run all | Select-String ...`, `cst run all > run.txt`). PowerShell does not
-wait for GUI-subsystem programs unless their output is redirected, so use a pipe
-or `Start-Process -Wait` when you script it.
+was started from, so `cst list`, `cst run ...` and so on print as usual.
+
+**Redirection.** `cmd` redirection and PowerShell pipes both work:
+
+```powershell
+cmd /c "build\cst.exe run all > run.txt"        # works
+build\cst.exe run all | Select-String "FP64"    # works (waits for the run)
+build\cst.exe run all --seconds 5 --csv run.csv # per-round samples
+```
+
+Windows PowerShell's own `>` operator, however, **cannot** capture a
+GUI-subsystem program's output: PowerShell 5.1 does not read the child's pipe
+for such a process, returns at once and leaves an empty file - `cst run all >
+run.txt` produces a 0-byte `run.txt` no matter what the tool does. Use `cmd`
+redirection, a pipe, `--csv`, or `Start-Process -RedirectStandardOutput ...
+-Wait` when scripting from PowerShell.
 
 `cst list --tsv` prints one tab-separated row per test (id, label, unit, group,
 default threads, higher-is-better, description) with no banner - a
@@ -184,7 +196,7 @@ machine-readable listing for scripts.
 | `--mode sustained` | repeat and sample until `--minutes` elapse |
 | `--seconds N` | measurement length for single mode (default 15) |
 | `--minutes N` | duration for sustained mode (default 20) |
-| `--threads N` | worker threads (default: all logical CPUs) |
+| `--threads N` | worker threads (default: all logical CPUs; capped at the logical core count) |
 | `--calibration FILE` | index calibration file (default `calibration.txt`) |
 | `--reference FILE` | golden reference file (default `reference.txt`) |
 | `--accept-reference` | record this run's fingerprints as the golden reference |
@@ -208,17 +220,25 @@ from console output.
 | **运行选中** / **全部运行** | run the checked workloads in sequence, or every workload |
 | **停止** | cancel the running session (the round in flight finishes first) |
 | 单项 + 秒 | `--seconds N`: one measurement per workload |
-| 持续 + 分钟 | `--minutes N`: sample once a second, with drift/throttling verdict per workload |
-| 线程 | `--threads N` (0 = all logical CPUs; per-test defaults then apply, e.g. Memory Latency runs single-threaded) |
-| 记录本次为参考 | `--accept-reference`, re-records the golden fingerprints |
-| 跳过校验 | `--no-verify` |
+| 持续 + 分钟 | `--minutes N`: sample once a second; the status column then shows the spread, the drift and the verdict (稳定 / 轻微衰减 / 降频 / 上升（异常）), with mean and p5/p95 in a tool tip |
+| 线程 | `--threads N` (0 = all logical CPUs; per-test defaults then apply, e.g. Memory Latency runs single-threaded). The box is capped at the logical core count: the per-thread working sets multiply by it, so a value like 1024 used to be able to exhaust memory and kill the process |
+| **记录为参考…** | `--accept-reference` for one run: asks for confirmation, then re-records the golden fingerprints of the checked workloads for that run only. It is a button, not a check box, and it is never written to the settings file - a recorded-once baseline cannot silently switch verification off in later sessions |
+| 跳过校验 | `--no-verify`; starts unchecked on every launch and is not persisted either |
 | 写出 CSV | `--csv <path>`; with several workloads the test id is prefixed to the file name |
 
 Every row fills in throughput, unit, AIDA64 index and the verification state
-(✓ 校验通过 / · 无参考记录 / ✗ 校验失败（得分按 0 计）), and sustained runs append
-the relative spread to the row. The log pane shows exactly the report blocks the
-command line prints. Settings (duration, mode, threads, selection, CSV flag,
-window size) persist to `%LOCALAPPDATA%\CpuStressTestGui\settings.ini`.
+(✓ 校验通过 / · 无参考记录 / ✗ 校验失败（得分按 0 计）). The **AIDA64 指数**
+column shows 未校准 (and `[uncalibrated]` in the CLI) until `calibration.txt`
+carries a real AIDA64 reference for that test, so the raw throughput is never
+dressed up as a score. The log pane shows exactly the report blocks the command
+line prints. Settings (duration, mode, threads, selection, CSV flag, window
+size) persist to `%LOCALAPPDATA%\CpuStressTestGui\settings.ini`.
+
+The window enforces a minimum size measured from the control rows and converted
+through the display scale factor, so the toolbars cannot be clipped on
+high-DPI monitors; a run in progress also survives closing the window (the
+session stops at the next round and the detached measurement thread never
+touches the window object again).
 
 Measurements run with the repository root as the working directory (found by
 walking up from `build\cst.exe` to the folder that holds `reference.txt`), so
@@ -226,14 +246,15 @@ references, calibration and relative CSV paths resolve exactly as they do on the
 command line.
 
 A UI-automation smoke test drives the parts that are easy to break - clearing
-the selection, running a single workload, and sustained run + stop:
+the selection, running a single workload, sustained run + stop, and the
+record-reference dialog (取消 must not start anything, 运行并记录 must run and
+re-record; `reference.txt` is backed up and restored around the test):
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File tools\gui_smoke.ps1
 ```
 
-It launches the GUI, asserts those three scenarios and prints
-`GUI SMOKE TEST PASSED`.
+It launches the GUI, asserts those scenarios and prints `GUI SMOKE TEST PASSED`.
 
 ### The FP64 Ray-Trace workload
 
@@ -269,39 +290,47 @@ after every round: if the output ever stops being bit-identical the run reports
   workload      : Double-precision analytic ray tracer, 4 rays/iteration (AVX2+FMA)
   parameters    : res=1024x1024 ss=1 depth=15 spheres=4 method=Base256_AVX2_FMA3_F64
   threads       : 16
-  elapsed       : 60.020 s over 184934 repetitions
-  throughput    : 201.9 k KRay/s
-  AIDA64 index  : 201930.0  [calibrated, scale 1, ref 0 KRay/s]
+  elapsed       : 60.021 s over 183453 repetitions
+  throughput    : 200309 KRay/s
+  AIDA64 index  : 200309.2  [uncalibrated]
   verification  : matches reference
                   reference 0effdbc6000812f8 / computed 0effdbc6000812f8
   --- sustained ---
   samples       : 60
-  min / median  : 196.9 k / 202.2 k KRay/s
-  mean +- sd    : 202 k +- 1.115 k KRay/s (0.55%)
-  p5 / p95      : 200.4 k / 203.5 k
-  first/last 1/3: 202.1 k -> 201.6 k (-0.26% drift)
-  verdict       : stable
+  min / median  : 185598 / 201884 KRay/s
+  mean +- sd    : 200380 +- 3563 KRay/s (1.78%)
+  p5 / p95      : 195173 / 203620
+  first/last 1/3: 202546 -> 196251 (-3.11% drift)
+  verdict       : mild decay
 ```
 
-The verdict line is the point of sustained mode: it names thermal/clock
-throttling when throughput decays by more than 5 % from the first third of the
-run to the last third.
+Values are printed as plain numbers next to the unit, so `200309 KRay/s` is
+exactly AIDA64's quantity - no second prefix stacked onto a unit that already
+carries one. `[uncalibrated]` (the GUI prints 未校准) means `calibration.txt`
+has no AIDA64 reference for this test, so the index column names that instead of
+repeating the raw throughput under a misleading label.
+
+The verdict line is the point of sustained mode: `THROTTLING` when throughput
+decays by more than 5 % from the first third of the run to the last third,
+`mild decay` between -2 % and -5 %, `stable` inside that band. The run above,
+taken next to everyday desktop load, sits in the mild-decay band; a quiet
+20-minute run on this host reports `stable` with ~±0.5 % spread.
 
 ### Example results (Ryzen 7 9800X3D, single mode, 8 threads unless noted)
 
 | test | measured |
 |---|---|
-| `f64ray` | ~202 k KRay/s on 16 threads (the default AVX2+FMA path); ~94 k with `CST_FORCE_AVX512=1` |
-| `f32ray` | ~313 k KRay/s on 16 threads |
-| `julia` | ~5.14 G MPixel/s on 16 threads |
-| `mandel` | ~2.52 G MPixel/s |
+| `f64ray` | ~202000 KRay/s on 16 threads (the default AVX2+FMA path); ~94500 with `CST_FORCE_AVX512=1` |
+| `f32ray` | ~313000 KRay/s on 16 threads |
+| `julia` | ~5140 MPixel/s on 16 threads |
+| `mandel` | ~2520 MPixel/s |
 | `sinjulia` | ~146 MPixel/s |
-| `aes` | ~65 k MiB/s on 16 threads; ~87 k at 8 (AIDA64's CPU AES, same host: 46.7 k at 16 threads, 69.9 k at 8 — see docs §12) |
-| `sha3` | ~4.7 k MiB/s on 16 threads; ~3.0 k at 8, ~0.43 k single (AIDA64's CPU SHA3, same host: ~5.4 k MiB/s at 16 threads — see docs §13) |
+| `aes` | ~65000 MiB/s on 16 threads; ~87000 at 8 (AIDA64's CPU AES, same host: 46700 at 16 threads, 69900 at 8 — see docs §12) |
+| `sha3` | ~4700 MiB/s on 16 threads; ~3000 at 8, ~430 single (AIDA64's CPU SHA3, same host: ~5400 MiB/s at 16 threads — see docs §13) |
 | `zlib` | ~1.53–1.55 GB/s on 16 threads, ~1.0 GB/s at 8, ~150 MB/s single (AIDA64's CPU ZLib, same host: 1.44 GB/s at 16 threads, 728.7 MB/s at 8, 119.6 MB/s single — see docs §15) |
-| `queen` | ~2.31 M kPos/s; ~2.69 M at 16 threads (AIDA64's CPU Queen at the same 16 threads: 1.89 M kPos/s, its fastest NGQueen method) |
-| `photoworxx` | ~94 k MPixel/s at 8 threads; ~107 k MPixel/s at 16 threads (AIDA64's ten NGImage2D stage rates sum to 95.8 k on the same host at 16 threads — per-stage table in docs §11) |
-| `checkmate` | ~13.4–14.0 GPos/s on 16 threads, ~8.9–9.6 at 8, ~1.28–1.33 single (AIDA64's CPU CheckMate, same host: 12.7 GPos/s (12,710 MP/s) at 16 threads, 6.38 at 8, 1.18 single — see docs §16) |
+| `queen` | ~2310000 kPos/s; ~2690000 at 16 threads (AIDA64's CPU Queen at the same 16 threads: 1890000 kPos/s, its fastest NGQueen method) |
+| `photoworxx` | ~94000 MPixel/s at 8 threads; ~107000 MPixel/s at 16 threads (AIDA64's ten NGImage2D stage rates sum to 95800 on the same host at 16 threads — per-stage table in docs §11) |
+| `checkmate` | ~13400–14000 MP/s on 16 threads, ~8900–9600 at 8, ~1280–1330 single (AIDA64's CPU CheckMate, same host: 12710 MP/s at 16 threads, 6380 at 8, 1180 single — see docs §16) |
 | `memread` | ~63 GB/s (AIDA64's Mem row: 63797.9 MiB/s at the same 8 threads) |
 | `memwrite` | ~75 GB/s; ~85 GB/s at 2 threads, the count AIDA64's write row uses (78208.2 MiB/s) |
 | `memcopy` | ~41 GB/s; ~60 GB/s at 2 threads, the count AIDA64's copy row uses (60838.1 MiB/s) |
@@ -313,7 +342,7 @@ run to the last third.
 > AVX2+FMA kernels by default and leaves the wide path reachable behind
 > `CST_FORCE_AVX512=1`. Both produce **identical fingerprints**, so a reference
 > recorded on either path verifies on the other. At 16 threads the default
-> measures ~202 k KRay/s against ~94 k for the wide path — and because it does
+> measures ~202000 KRay/s against ~94500 for the wide path — and because it does
 > more real work per second it also draws more power, which is why the AVX2 run
 > (like AIDA64's own test) is the one that actually heats the CPU.
 >
@@ -369,7 +398,7 @@ result:
 
 ```
   throughput    : 0 KRay/s
-  AIDA64 index  : 0.0
+  AIDA64 index  : 0.0  [uncalibrated]
   verification  : DOES NOT MATCH REFERENCE - hardware computed a different result
                   reference 783f4ddaa8009206 / computed e264d8f23bf198e3
                   >>> RESULT REJECTED: score forced to 0.  The CPU
@@ -437,7 +466,10 @@ then put it in `calibration.txt`:
 f64ray          0.0001234    45678.0      KRay/s
 ```
 
-From then on `AIDA64 index` is reported next to the raw throughput. `cst run ...
+From then on `AIDA64 index` is reported next to the raw throughput. Rows that
+still carry the template values (scale 1.0, no reference) are ignored: the tool
+prints `[uncalibrated]` - and the GUI shows 未校准 in the index column - instead
+of presenting the raw throughput under the name "AIDA64 index". `cst run ...
 --emit-calibration calibration.txt` writes a template with every test id.
 
 **Honest caveats.** This is a re-implementation, not AIDA64's code, and AIDA64 is

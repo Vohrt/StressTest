@@ -33,8 +33,14 @@ namespace {
 
 // This is a GUI-subsystem executable, so the command line mode has to attach to
 // the console (or keep the inherited pipes) before the C runtime can print.
-// Without this, `cst run ... > file` and `cst run ... | Select-String` would
-// silently produce no output.
+// Without this, output would be lost when the tool is started from a console;
+// real inherited handles (cmd redirection, a PowerShell pipe) are left alone.
+//
+// Note that PowerShell's own ">" operator cannot be supported from this side:
+// PowerShell 5.1 does not read the output of a GUI-subsystem process, so the
+// command returns at once, the pipe is closed and the file stays empty no
+// matter what happens here.  The README recommends cmd redirection, a pipe or
+// --csv instead.
 void attach_console_streams()
 {
     const HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
