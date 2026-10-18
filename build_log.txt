@@ -1,0 +1,345 @@
+﻿
+  姝ｅ湪纭畾瑕佽繕鍘熺殑椤圭洰鈥?
+  鎵€鏈夐」鐩潎鏄渶鏂扮殑锛屾棤娉曡繕鍘熴€?
+  fractal_dump.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\fractal_dump.exe
+  selftest_image.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\selftest_image.exe
+  selftest_crypto.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\selftest_crypto.exe
+  selftest_memory.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\selftest_memory.exe
+  main.cpp
+  session.cpp
+  common.cpp
+  calibration.cpp
+  reference.cpp
+  registry.cpp
+  bench_fp.cpp
+  raytrace.cpp
+  bench_crypto.cpp
+  bench_image.cpp
+  bench_memory.cpp
+  raytrace_avx512.cpp
+  mem_kernels_avx512.cpp
+  cst_engine.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\lib\cst_engine.lib
+  64 bit MIDLRT Processing C:\Users\Voheart\source\repos\CpuStressTest\gui\Project.idl
+  Project.idl
+  64 bit MIDLRT Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.28000.0\winrt\winrtbase.idl
+  winrtbase.idl
+  64 bit MIDLRT Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.28000.0\winrt\midlbase.idl
+  midlbase.idl
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.graphics.imaging.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.graphics.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.security.authentication.oauth.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.winui\2.3.6\metadata\microsoft.ui.text.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.ui.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.winui\2.3.6\metadata\microsoft.ui.xaml.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.web.webview2\1.0.3719.77\lib\microsoft.web.webview2.core.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.contentsafety.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.imaging.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windows.ai.machinelearning\2.1.74\metadata\microsoft.windows.ai.machinelearning.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.text.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.video.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.background.universalbgtask.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.background.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.dynamicdependency.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.resources.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.windowsappruntime.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applifecycle.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.appnotifications.builder.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.appnotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.badgenotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.globalization.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.management.deployment.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.media.capture.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.pushnotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.search\2.4.4\metadata\microsoft.windows.search.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.security.accesscontrol.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.storage.pickers.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.storage.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.system.power.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.system.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.widgets\2.0.5\metadata\microsoft.windows.widgets.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.actions.actionscontract\8.0.0.0\windows.ai.actions.actionscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.agents.agentscontract\2.0.0.0\windows.ai.agents.agentscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.machinelearning.machinelearningcontract\5.0.0.0\windows.ai.machinelearning.machinelearningcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.machinelearning.preview.machinelearningpreviewcontract\2.0.0.0\windows.ai.machinelearning.preview.machinelearningpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.activatedeventscontract\1.0.0.0\windows.applicationmodel.activation.activatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.activationcamerasettingscontract\1.0.0.0\windows.applicationmodel.activation.activationcamerasettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.contactactivatedeventscontract\1.0.0.0\windows.applicationmodel.activation.contactactivatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.webuisearchactivatedeventscontract\1.0.0.0\windows.applicationmodel.activation.webuisearchactivatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.background.backgroundalarmapplicationcontract\1.0.0.0\windows.applicationmodel.background.backgroundalarmapplicationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.background.callsbackgroundcontract\4.0.0.0\windows.applicationmodel.calls.background.callsbackgroundcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.callsphonecontract\7.0.0.0\windows.applicationmodel.calls.callsphonecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.callsvoipcontract\5.0.0.0\windows.applicationmodel.calls.callsvoipcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.lockscreencallcontract\1.0.0.0\windows.applicationmodel.calls.lockscreencallcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.communicationblocking.communicationblockingcontract\2.0.0.0\windows.applicationmodel.communicationblocking.communicationblockingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.fulltrustappcontract\2.0.0.0\windows.applicationmodel.fulltrustappcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.inkworkspace.previewinkworkspacecontract\1.0.0.0\windows.applicationmodel.preview.inkworkspace.previewinkworkspacecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.notes.previewnotescontract\2.0.0.0\windows.applicationmodel.preview.notes.previewnotescontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.startupappspreviewcontract\1.0.0.0\windows.applicationmodel.preview.startupappspreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.resources.management.resourceindexercontract\2.0.0.0\windows.applicationmodel.resources.management.resourceindexercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.search.core.searchcorecontract\1.0.0.0\windows.applicationmodel.search.core.searchcorecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.search.searchcontract\1.0.0.0\windows.applicationmodel.search.searchcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.socialinfo.socialinfocontract\2.0.0.0\windows.applicationmodel.socialinfo.socialinfocontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.startuptaskcontract\3.0.0.0\windows.applicationmodel.startuptaskcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.wallet.walletcontract\2.0.0.0\windows.applicationmodel.wallet.walletcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.custom.customdevicecontract\1.0.0.0\windows.devices.custom.customdevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.deviceslowlevelcontract\3.0.0.0\windows.devices.deviceslowlevelcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.portable.portabledevicecontract\1.0.0.0\windows.devices.portable.portabledevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.power.powergridapicontract\1.0.0.0\windows.devices.power.powergridapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.printers.extensions.extensionscontract\2.0.0.0\windows.devices.printers.extensions.extensionscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.printers.printerscontract\1.0.0.0\windows.devices.printers.printerscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.scanners.scannerdevicecontract\1.0.0.0\windows.devices.scanners.scannerdevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.smartcards.smartcardbackgroundtriggercontract\3.0.0.0\windows.devices.smartcards.smartcardbackgroundtriggercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.smartcards.smartcardemulatorcontract\6.0.0.0\windows.devices.smartcards.smartcardemulatorcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.sms.legacysmsapicontract\1.0.0.0\windows.devices.sms.legacysmsapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.foundation.foundationcontract\4.0.0.0\windows.foundation.foundationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.foundation.universalapicontract\20.0.0.0\windows.foundation.universalapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.input.gaminginputpreviewcontract\2.0.0.0\windows.gaming.input.gaminginputpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.preview.gamesenumerationcontract\2.0.0.0\windows.gaming.preview.gamesenumerationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.ui.gamechatoverlaycontract\1.0.0.0\windows.gaming.ui.gamechatoverlaycontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.ui.gaminguiprovidercontract\1.0.0.0\windows.gaming.ui.gaminguiprovidercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.xboxlive.storageapicontract\1.0.0.0\windows.gaming.xboxlive.storageapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.globalization.globalizationjapanesephoneticanalyzercontract\1.0.0.0\windows.globalization.globalizationjapanesephoneticanalyzercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.graphics.printing3d.printing3dcontract\4.0.0.0\windows.graphics.printing3d.printing3dcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.deployment.preview.deploymentpreviewcontract\1.0.0.0\windows.management.deployment.preview.deploymentpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.deployment.sharedpackagecontainercontract\1.0.0.0\windows.management.deployment.sharedpackagecontainercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.update.cluster.clusternativeupdatingcontract\1.0.0.0\windows.management.update.cluster.clusternativeupdatingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.update.windowsupdatecontract\3.0.0.0\windows.management.update.windowsupdatecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.workplace.workplacesettingscontract\1.0.0.0\windows.management.workplace.workplacesettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.appbroadcasting.appbroadcastingcontract\1.0.0.0\windows.media.appbroadcasting.appbroadcastingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.apprecording.apprecordingcontract\1.0.0.0\windows.media.apprecording.apprecordingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appbroadcastcontract\2.0.0.0\windows.media.capture.appbroadcastcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appcapturecontract\4.0.0.0\windows.media.capture.appcapturecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appcapturemetadatacontract\1.0.0.0\windows.media.capture.appcapturemetadatacontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.cameracaptureuicontract\1.0.0.0\windows.media.capture.cameracaptureuicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.gamebarcontract\1.0.0.0\windows.media.capture.gamebarcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.devices.callcontrolcontract\1.0.0.0\windows.media.devices.callcontrolcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.mediacontrolcontract\1.0.0.0\windows.media.mediacontrolcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.playlists.playlistscontract\1.0.0.0\windows.media.playlists.playlistscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.protection.protectionrenewalcontract\1.0.0.0\windows.media.protection.protectionrenewalcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.connectivity.wwancontract\3.0.0.0\windows.networking.connectivity.wwancontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.networkoperators.legacynetworkoperatorscontract\1.0.0.0\windows.networking.networkoperators.legacynetworkoperatorscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.sockets.controlchanneltriggercontract\3.0.0.0\windows.networking.sockets.controlchanneltriggercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.xboxlive.xboxlivesecuresocketscontract\1.0.0.0\windows.networking.xboxlive.xboxlivesecuresocketscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.perception.automation.core.perceptionautomationcorecontract\1.0.0.0\windows.perception.automation.core.perceptionautomationcorecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.enterprisedata.enterprisedatacontract\5.0.0.0\windows.security.enterprisedata.enterprisedatacontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.exchangeactivesyncprovisioning.eascontract\1.0.0.0\windows.security.exchangeactivesyncprovisioning.eascontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.isolation.isolatedwindowsenvironmentcontract\5.0.0.0\windows.security.isolation.isolatedwindowsenvironmentcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.maps.guidancecontract\3.0.0.0\windows.services.maps.guidancecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.maps.localsearchcontract\4.0.0.0\windows.services.maps.localsearchcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.store.storecontract\4.0.0.0\windows.services.store.storecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.targetedcontent.targetedcontentcontract\1.0.0.0\windows.services.targetedcontent.targetedcontentcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.storage.provider.cloudfilescontract\7.0.0.0\windows.storage.provider.cloudfilescontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.power.thermal.powerthermalapicontract\1.0.0.0\windows.system.power.thermal.powerthermalapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.platformautomaticappsignincontract\1.0.0.0\windows.system.profile.platformautomaticappsignincontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profilehardwaretokencontract\1.0.0.0\windows.system.profile.profilehardwaretokencontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profileretailinfocontract\2.0.0.0\windows.system.profile.profileretailinfocontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profilesharedmodecontract\2.0.0.0\windows.system.profile.profilesharedmodecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.systemmanufacturers.systemmanufacturerscontract\3.0.0.0\windows.system.profile.systemmanufacturers.systemmanufacturerscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.systemmanagementcontract\7.0.0.0\windows.system.systemmanagementcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.userprofile.userprofilecontract\2.0.0.0\windows.system.userprofile.userprofilecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.userprofile.userprofilelockscreencontract\1.0.0.0\windows.system.userprofile.userprofilelockscreencontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.applicationsettings.applicationssettingscontract\1.0.0.0\windows.ui.applicationsettings.applicationssettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.core.animationmetrics.animationmetricscontract\1.0.0.0\windows.ui.core.animationmetrics.animationmetricscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.core.corewindowdialogscontract\1.0.0.0\windows.ui.core.corewindowdialogscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.input.preview.text.previewtextcontract\1.0.0.0\windows.ui.input.preview.text.previewtextcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.companionwindows.companionwindowscontract\1.0.0.0\windows.ui.shell.companionwindows.companionwindowscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.securityappmanagercontract\1.0.0.0\windows.ui.shell.securityappmanagercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.tasks.apptaskcontract\2.0.0.0\windows.ui.shell.tasks.apptaskcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.windowtabmanagercontract\1.0.0.0\windows.ui.shell.windowtabmanagercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.uiautomation.uiautomationcontract\2.0.0.0\windows.ui.uiautomation.uiautomationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.viewmanagement.viewmanagementviewscalingcontract\1.0.0.0\windows.ui.viewmanagement.viewmanagementviewscalingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.xaml.core.direct.xamldirectcontract\5.0.0.0\windows.ui.xaml.core.direct.xamldirectcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.xaml.hosting.hostingcontract\5.0.0.0\windows.ui.xaml.hosting.hostingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.web.http.diagnostics.httpdiagnosticscontract\2.0.0.0\windows.web.http.diagnostics.httpdiagnosticscontract.winmd
+  64 bit MIDLRT Processing C:\Users\Voheart\source\repos\CpuStressTest\vs\XamlMetaDataProvider.idl
+  XamlMetaDataProvider.idl
+  64 bit MIDLRT Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.28000.0\winrt\winrtbase.idl
+  winrtbase.idl
+  64 bit MIDLRT Processing C:\Program Files (x86)\Windows Kits\10\Include\10.0.28000.0\winrt\midlbase.idl
+  midlbase.idl
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.graphics.imaging.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.graphics.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.security.authentication.oauth.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.winui\2.3.6\metadata\microsoft.ui.text.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.interactiveexperiences\2.1.6\metadata\10.0.18362.0\microsoft.ui.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.winui\2.3.6\metadata\microsoft.ui.xaml.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.web.webview2\1.0.3719.77\lib\microsoft.web.webview2.core.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.contentsafety.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.imaging.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windows.ai.machinelearning\2.1.74\metadata\microsoft.windows.ai.machinelearning.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.text.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.video.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.ai\2.4.4\metadata\microsoft.windows.ai.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.background.universalbgtask.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.background.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.dynamicdependency.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.resources.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applicationmodel.windowsappruntime.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.applifecycle.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.appnotifications.builder.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.appnotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.badgenotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.foundation.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.globalization.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.management.deployment.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.media.capture.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.pushnotifications.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.search\2.4.4\metadata\microsoft.windows.search.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.security.accesscontrol.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.storage.pickers.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.storage.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.system.power.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.foundation\2.3.9\metadata\microsoft.windows.system.winmd
+  Processing WinMD c:\users\voheart\.nuget\packages\microsoft.windowsappsdk.widgets\2.0.5\metadata\microsoft.windows.widgets.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.actions.actionscontract\8.0.0.0\windows.ai.actions.actionscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.agents.agentscontract\2.0.0.0\windows.ai.agents.agentscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.machinelearning.machinelearningcontract\5.0.0.0\windows.ai.machinelearning.machinelearningcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ai.machinelearning.preview.machinelearningpreviewcontract\2.0.0.0\windows.ai.machinelearning.preview.machinelearningpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.activatedeventscontract\1.0.0.0\windows.applicationmodel.activation.activatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.activationcamerasettingscontract\1.0.0.0\windows.applicationmodel.activation.activationcamerasettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.contactactivatedeventscontract\1.0.0.0\windows.applicationmodel.activation.contactactivatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.activation.webuisearchactivatedeventscontract\1.0.0.0\windows.applicationmodel.activation.webuisearchactivatedeventscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.background.backgroundalarmapplicationcontract\1.0.0.0\windows.applicationmodel.background.backgroundalarmapplicationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.background.callsbackgroundcontract\4.0.0.0\windows.applicationmodel.calls.background.callsbackgroundcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.callsphonecontract\7.0.0.0\windows.applicationmodel.calls.callsphonecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.callsvoipcontract\5.0.0.0\windows.applicationmodel.calls.callsvoipcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.calls.lockscreencallcontract\1.0.0.0\windows.applicationmodel.calls.lockscreencallcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.communicationblocking.communicationblockingcontract\2.0.0.0\windows.applicationmodel.communicationblocking.communicationblockingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.fulltrustappcontract\2.0.0.0\windows.applicationmodel.fulltrustappcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.inkworkspace.previewinkworkspacecontract\1.0.0.0\windows.applicationmodel.preview.inkworkspace.previewinkworkspacecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.notes.previewnotescontract\2.0.0.0\windows.applicationmodel.preview.notes.previewnotescontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.preview.startupappspreviewcontract\1.0.0.0\windows.applicationmodel.preview.startupappspreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.resources.management.resourceindexercontract\2.0.0.0\windows.applicationmodel.resources.management.resourceindexercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.search.core.searchcorecontract\1.0.0.0\windows.applicationmodel.search.core.searchcorecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.search.searchcontract\1.0.0.0\windows.applicationmodel.search.searchcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.socialinfo.socialinfocontract\2.0.0.0\windows.applicationmodel.socialinfo.socialinfocontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.startuptaskcontract\3.0.0.0\windows.applicationmodel.startuptaskcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.applicationmodel.wallet.walletcontract\2.0.0.0\windows.applicationmodel.wallet.walletcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.custom.customdevicecontract\1.0.0.0\windows.devices.custom.customdevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.deviceslowlevelcontract\3.0.0.0\windows.devices.deviceslowlevelcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.portable.portabledevicecontract\1.0.0.0\windows.devices.portable.portabledevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.power.powergridapicontract\1.0.0.0\windows.devices.power.powergridapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.printers.extensions.extensionscontract\2.0.0.0\windows.devices.printers.extensions.extensionscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.printers.printerscontract\1.0.0.0\windows.devices.printers.printerscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.scanners.scannerdevicecontract\1.0.0.0\windows.devices.scanners.scannerdevicecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.smartcards.smartcardbackgroundtriggercontract\3.0.0.0\windows.devices.smartcards.smartcardbackgroundtriggercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.smartcards.smartcardemulatorcontract\6.0.0.0\windows.devices.smartcards.smartcardemulatorcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.devices.sms.legacysmsapicontract\1.0.0.0\windows.devices.sms.legacysmsapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.foundation.foundationcontract\4.0.0.0\windows.foundation.foundationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.foundation.universalapicontract\20.0.0.0\windows.foundation.universalapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.input.gaminginputpreviewcontract\2.0.0.0\windows.gaming.input.gaminginputpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.preview.gamesenumerationcontract\2.0.0.0\windows.gaming.preview.gamesenumerationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.ui.gamechatoverlaycontract\1.0.0.0\windows.gaming.ui.gamechatoverlaycontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.ui.gaminguiprovidercontract\1.0.0.0\windows.gaming.ui.gaminguiprovidercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.gaming.xboxlive.storageapicontract\1.0.0.0\windows.gaming.xboxlive.storageapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.globalization.globalizationjapanesephoneticanalyzercontract\1.0.0.0\windows.globalization.globalizationjapanesephoneticanalyzercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.graphics.printing3d.printing3dcontract\4.0.0.0\windows.graphics.printing3d.printing3dcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.deployment.preview.deploymentpreviewcontract\1.0.0.0\windows.management.deployment.preview.deploymentpreviewcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.deployment.sharedpackagecontainercontract\1.0.0.0\windows.management.deployment.sharedpackagecontainercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.update.cluster.clusternativeupdatingcontract\1.0.0.0\windows.management.update.cluster.clusternativeupdatingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.update.windowsupdatecontract\3.0.0.0\windows.management.update.windowsupdatecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.management.workplace.workplacesettingscontract\1.0.0.0\windows.management.workplace.workplacesettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.appbroadcasting.appbroadcastingcontract\1.0.0.0\windows.media.appbroadcasting.appbroadcastingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.apprecording.apprecordingcontract\1.0.0.0\windows.media.apprecording.apprecordingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appbroadcastcontract\2.0.0.0\windows.media.capture.appbroadcastcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appcapturecontract\4.0.0.0\windows.media.capture.appcapturecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.appcapturemetadatacontract\1.0.0.0\windows.media.capture.appcapturemetadatacontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.cameracaptureuicontract\1.0.0.0\windows.media.capture.cameracaptureuicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.capture.gamebarcontract\1.0.0.0\windows.media.capture.gamebarcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.devices.callcontrolcontract\1.0.0.0\windows.media.devices.callcontrolcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.mediacontrolcontract\1.0.0.0\windows.media.mediacontrolcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.playlists.playlistscontract\1.0.0.0\windows.media.playlists.playlistscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.media.protection.protectionrenewalcontract\1.0.0.0\windows.media.protection.protectionrenewalcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.connectivity.wwancontract\3.0.0.0\windows.networking.connectivity.wwancontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.networkoperators.legacynetworkoperatorscontract\1.0.0.0\windows.networking.networkoperators.legacynetworkoperatorscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.sockets.controlchanneltriggercontract\3.0.0.0\windows.networking.sockets.controlchanneltriggercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.networking.xboxlive.xboxlivesecuresocketscontract\1.0.0.0\windows.networking.xboxlive.xboxlivesecuresocketscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.perception.automation.core.perceptionautomationcorecontract\1.0.0.0\windows.perception.automation.core.perceptionautomationcorecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.enterprisedata.enterprisedatacontract\5.0.0.0\windows.security.enterprisedata.enterprisedatacontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.exchangeactivesyncprovisioning.eascontract\1.0.0.0\windows.security.exchangeactivesyncprovisioning.eascontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.security.isolation.isolatedwindowsenvironmentcontract\5.0.0.0\windows.security.isolation.isolatedwindowsenvironmentcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.maps.guidancecontract\3.0.0.0\windows.services.maps.guidancecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.maps.localsearchcontract\4.0.0.0\windows.services.maps.localsearchcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.store.storecontract\4.0.0.0\windows.services.store.storecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.services.targetedcontent.targetedcontentcontract\1.0.0.0\windows.services.targetedcontent.targetedcontentcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.storage.provider.cloudfilescontract\7.0.0.0\windows.storage.provider.cloudfilescontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.power.thermal.powerthermalapicontract\1.0.0.0\windows.system.power.thermal.powerthermalapicontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.platformautomaticappsignincontract\1.0.0.0\windows.system.profile.platformautomaticappsignincontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profilehardwaretokencontract\1.0.0.0\windows.system.profile.profilehardwaretokencontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profileretailinfocontract\2.0.0.0\windows.system.profile.profileretailinfocontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.profilesharedmodecontract\2.0.0.0\windows.system.profile.profilesharedmodecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.profile.systemmanufacturers.systemmanufacturerscontract\3.0.0.0\windows.system.profile.systemmanufacturers.systemmanufacturerscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.systemmanagementcontract\7.0.0.0\windows.system.systemmanagementcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.userprofile.userprofilecontract\2.0.0.0\windows.system.userprofile.userprofilecontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.system.userprofile.userprofilelockscreencontract\1.0.0.0\windows.system.userprofile.userprofilelockscreencontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.applicationsettings.applicationssettingscontract\1.0.0.0\windows.ui.applicationsettings.applicationssettingscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.core.animationmetrics.animationmetricscontract\1.0.0.0\windows.ui.core.animationmetrics.animationmetricscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.core.corewindowdialogscontract\1.0.0.0\windows.ui.core.corewindowdialogscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.input.preview.text.previewtextcontract\1.0.0.0\windows.ui.input.preview.text.previewtextcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.companionwindows.companionwindowscontract\1.0.0.0\windows.ui.shell.companionwindows.companionwindowscontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.securityappmanagercontract\1.0.0.0\windows.ui.shell.securityappmanagercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.tasks.apptaskcontract\2.0.0.0\windows.ui.shell.tasks.apptaskcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.shell.windowtabmanagercontract\1.0.0.0\windows.ui.shell.windowtabmanagercontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.uiautomation.uiautomationcontract\2.0.0.0\windows.ui.uiautomation.uiautomationcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.viewmanagement.viewmanagementviewscalingcontract\1.0.0.0\windows.ui.viewmanagement.viewmanagementviewscalingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.xaml.core.direct.xamldirectcontract\5.0.0.0\windows.ui.xaml.core.direct.xamldirectcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.ui.xaml.hosting.hostingcontract\5.0.0.0\windows.ui.xaml.hosting.hostingcontract.winmd
+  Processing WinMD c:\program files (x86)\windows kits\10\references\10.0.28000.0\windows.web.http.diagnostics.httpdiagnosticscontract\2.0.0.0\windows.web.http.diagnostics.httpdiagnosticscontract.winmd
+  Microsoft(R) Metadata Merge Utility Version 10.0.49.
+  
+  
+  Processing input metadata file C:\Users\Voheart\source\repos\CpuStressTest\vs\..\build\vs\obj_cstapp\Release\Unmerged\Project.winmd.
+  Processing input metadata file C:\Users\Voheart\source\repos\CpuStressTest\vs\..\build\vs\obj_cstapp\Release\Unmerged\XamlMetaDataProvider.winmd.
+  Saved output metadata file CpuStressTestGui.winmd.
+  Validating metadata file C:\Users\Voheart\source\repos\CpuStressTest\vs\..\build\vs\obj_cstapp\Release\Merged\CpuStressTestGui.winmd.
+  WindowsAppSDKMLDeploymentMode=SelfContained
+  pch.cpp
+C:\Users\Voheart\source\repos\CpuStressTest\build\vs\obj_cstapp\Release\Generated Files\winrt\impl\Microsoft.UI.Xaml.Media.Animation.0.h(2256,39): warning C4002: 绫诲嚱鏁板畯鐨勮皟鐢ㄢ€淕etCurrentTime鈥濆弬鏁拌繃澶?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  (缂栬瘧婧愭枃浠垛€?./gui/pch.cpp鈥?
+  
+  App.xaml.cpp
+  MainWindow.xaml.cpp
+  Settings.cpp
+  UndockedRegFreeWinRT-AutoInitializer.cpp
+  WindowsAppRuntimeAutoInitializer.cpp
+  WindowsMLAutoInitializer.SelfContained.cpp
+  XamlMetaDataProvider.cpp
+  XamlTypeInfo.g.cpp
+  MainWindow.xaml.g.hpp
+  XamlTypeInfo.Impl.g.cpp
+C:\Users\Voheart\source\repos\CpuStressTest\build\vs\obj_cstapp\Release\XamlTypeInfo.g.cpp(9,10): warning C4651: 涓洪缂栬瘧澶达紝鑰岄潪涓哄綋鍓嶇紪璇戞寚瀹氣€?DMICROSOFT_WINDOWSAPPSDK_SELFCONTAINED=1鈥?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  (缂栬瘧婧愭枃浠垛€?./build/vs/obj_cstapp/Release/XamlTypeInfo.g.cpp鈥?
+  
+C:\Users\Voheart\source\repos\CpuStressTest\build\vs\obj_cstapp\Release\XamlTypeInfo.Impl.g.cpp(9,10): warning C4651: 涓洪缂栬瘧澶达紝鑰岄潪涓哄綋鍓嶇紪璇戞寚瀹氣€?DMICROSOFT_WINDOWSAPPSDK_SELFCONTAINED=1鈥?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  (缂栬瘧婧愭枃浠垛€?./build/vs/obj_cstapp/Release/XamlTypeInfo.Impl.g.cpp鈥?
+  
+C:\Users\Voheart\source\repos\CpuStressTest\build\vs\obj_cstapp\Release\MainWindow.xaml.g.hpp(8,10): warning C4651: 涓洪缂栬瘧澶达紝鑰岄潪涓哄綋鍓嶇紪璇戞寚瀹氣€?DMICROSOFT_WINDOWSAPPSDK_SELFCONTAINED=1鈥?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  (缂栬瘧婧愭枃浠垛€?./build/vs/obj_cstapp/Release/MainWindow.xaml.g.hpp鈥?
+  
+  App.xaml.g.hpp
+  App.xaml.g.hpp
+C:\Users\Voheart\source\repos\CpuStressTest\build\vs\obj_cstapp\Release\App.xaml.g.hpp(8,10): warning C4651: 涓洪缂栬瘧澶达紝鑰岄潪涓哄綋鍓嶇紪璇戞寚瀹氣€?DMICROSOFT_WINDOWSAPPSDK_SELFCONTAINED=1鈥?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  (缂栬瘧婧愭枃浠垛€?./build/vs/obj_cstapp/Release/App.xaml.g.hpp鈥?
+  
+ROSLYNCODETASKFACTORYCSHARPCOMPILER : warning CS1668: 鈥淟IB 鐜鍙橀噺鈥濅腑鎸囧畾鐨勬悳绱㈣矾寰勨€淐:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\atlmfc\lib\x64鈥濇棤鏁?--鈥滅洰褰曚笉瀛樺湪鈥?[C:\Users\Voheart\source\repos\CpuStressTest\vs\cst.vcxproj]
+  cst.vcxproj -> C:\Users\Voheart\source\repos\CpuStressTest\build\cst.exe
+  build\bench_kernels.exe
+  build\bench_kernels512.exe
+  build\cst.exe
+  build\fma_burn.exe
+  build\fractal_dump.exe
+  build\RestartAgent.exe
+  build\selftest_crypto.exe
+  build\selftest_image.exe
+  build\selftest_memory.exe
+  build\verify_compare.exe
+  build\verify_compress.exe
+  build\verify_fractal.exe
+  build\verify_inflate.exe
+  build\verify_rt.exe

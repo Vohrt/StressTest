@@ -1,0 +1,8 @@
+# CpuStressTest calibration file v1
+# Fill in the `scale` column: run `cst run <test>` to see this machine's
+# measured throughput, run the same test in AIDA64 to get its score, then
+#   scale = aida64_score / cst_measured_value
+# with `reference` set to the AIDA64 score.
+#
+# test          scale        reference    unit
+f64ray         1.0          0.0          KRay/s

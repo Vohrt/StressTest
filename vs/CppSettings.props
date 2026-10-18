@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Shared build settings for the C++ projects of CpuStressTest.
+
+  These are the measurement engine's flags - the ones the recorded reference
+  fingerprints were made with: C++17, /O2, /fp:precise, /EHsc, /W3,
+  _CRT_SECURE_NO_WARNINGS and an /arch:AVX2 baseline (the AVX-512 translation
+  units override this per file).  The static library cst_engine, the module
+  self-tests and the frame dumper use them as they are; the WinUI app
+  (cst.vcxproj) imports this file for the output layout and the include paths,
+  then overrides language standard, precompiled header and subsystem for its
+  C++/WinRT translation units.
+
+  Outputs land in <repo>\build\ - the folder the tools and the README use - and
+  Debug builds go to <repo>\build\debug\ so they can never overwrite the Release
+  binary that the recorded reference fingerprints were made with (a Debug build
+  may produce different low-order FP bits).
+-->
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <PropertyGroup>
+    <RepoRoot>$(MSBuildThisFileDirectory)..\</RepoRoot>
+    <OutDir Condition="'$(Configuration)' == 'Release'">$(RepoRoot)build\</OutDir>
+    <OutDir Condition="'$(Configuration)' == 'Debug'">$(RepoRoot)build\debug\</OutDir>
+    <IntDir>$(RepoRoot)build\vs\obj_$(ProjectName)\$(Configuration)\</IntDir>
+    <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>false</SDLCheck>
+      <ConformanceMode>false</ConformanceMode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <FloatingPointModel>Precise</FloatingPointModel>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions2</EnableEnhancedInstructionSet>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(RepoRoot)src;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Release'">
+    <ClCompile>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+    </ClCompile>
+    <Link>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+
+  <ItemDefinitionGroup Condition="'$(Configuration)' == 'Debug'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+</Project>

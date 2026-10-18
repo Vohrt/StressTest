@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  CpuStressTest: one executable that is both the GUI and the command line.
+
+    cst.exe                 double-click / no arguments -> WinUI window
+    cst.exe gui             same
+    cst.exe run all ...     command line (attaches to the caller's console)
+    cst.exe list ...        command line (the tsv flag gives machine readable rows)
+
+  The measurement engine is a separate static library project (cst_engine) and
+  is linked into this executable: the GUI calls the very same code the command
+  line does, in-process.  There is no second exe and nothing is parsed from
+  console output.
+
+  This project only carries the WinUI 3 shell (gui\) plus the entry point that
+  decides between GUI and command line.  Every translation unit here is C++/WinRT
+  - C++20, /utf-8, /bigobj and a precompiled header - while the engine keeps
+  C++17 and the flags of build.ps1, so the recorded reference fingerprints stay
+  valid.
+-->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{7C3F2A18-5B44-4E0A-9D21-3B6F5A8C0001}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CpuStressTestGui</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>cst</ProjectName>
+    <CppWinRTOptimized>true</CppWinRTOptimized>
+    <CppWinRTRootNamespaceAutoMerge>true</CppWinRTRootNamespaceAutoMerge>
+    <MinimalCoreWin>true</MinimalCoreWin>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <UseWinUI>true</UseWinUI>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <EnableMsixTooling>true</EnableMsixTooling>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <UseWinUI>true</UseWinUI>
+    <WindowsPackageType>None</WindowsPackageType>
+    <WindowsAppSDKSelfContained>true</WindowsAppSDKSelfContained>
+    <EnableMsixTooling>true</EnableMsixTooling>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+
+  <PropertyGroup Label="WinUIGlue">
+    <!-- The C++/WinRT and XAML-integration targets check for these two values;
+         for a vcxproj the defaults are $(Language) == "C++" and an empty
+         AppContainerApplication, which silently disables the XAML passes. -->
+    <XamlLanguage>CppWinRT</XamlLanguage>
+    <AppContainerApplication>false</AppContainerApplication>
+    <!-- Coroutines are standard in C++20; the legacy /await switch would drag
+         in <experimental/coroutine> and fail to compile. -->
+    <CppWinRTEnableLegacyCoroutines>false</CppWinRTEnableLegacyCoroutines>
+  </PropertyGroup>
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+            Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
+  <!-- Include paths (engine headers in src\) and the shared output layout:
+       Release -> <repo>\build\, Debug -> <repo>\build\debug\. -->
+  <Import Project="$(MSBuildThisFileDirectory)CppSettings.props" />
+
+  <PropertyGroup>
+    <IntDir>$(RepoRoot)build\vs\obj_cstapp\$(Configuration)\</IntDir>
+    <TargetName>cst</TargetName>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <!-- Defaults for every translation unit of this project.  Items that the
+         build adds on the fly (XamlTypeInfo.g.cpp, XamlMetaDataProvider.cpp,
+         App.xaml.g.hpp, ...) inherit them, which is why the XAML tooling needs
+         no per-file metadata here. -->
+    <ClCompile>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <ConformanceMode>true</ConformanceMode>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\gui;$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <Midl>
+      <AdditionalIncludeDirectories>$(MSBuildThisFileDirectory)..\gui;$(GeneratedFilesDir);$(IntDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </Midl>
+  </ItemDefinitionGroup>
+
+  <ItemGroup Label="Engine">
+    <!-- The measurement engine, linked statically. -->
+    <ProjectReference Include="cst_engine.vcxproj">
+      <Project>{7C3F2A18-5B44-4E0A-9D21-3B6F5A8C0007}</Project>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup Label="Gui">
+    <ClCompile Include="..\gui\pch.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="..\gui\App.xaml.cpp" />
+    <ClCompile Include="..\gui\MainWindow.xaml.cpp" />
+    <ClCompile Include="..\gui\Settings.cpp" />
+    <ClInclude Include="..\gui\pch.h" />
+    <ClInclude Include="..\gui\App.xaml.h" />
+    <ClInclude Include="..\gui\MainWindow.xaml.h" />
+    <ClInclude Include="..\gui\Settings.h" />
+  </ItemGroup>
+
+  <ItemGroup Label="Xaml">
+    <Midl Include="..\gui\Project.idl" />
+    <Manifest Include="..\gui\app.manifest" />
+    <ApplicationDefinition Include="..\gui\App.xaml" />
+    <Page Include="..\gui\MainWindow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup Label="Packages">
+    <PackageReference Include="Microsoft.WindowsAppSDK" Version="2.4.0" />
+    <PackageReference Include="Microsoft.Windows.CppWinRT" Version="2.0.250303.1" />
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+
+  <!--
+    Native WinUI build wiring.
+
+    In Visual Studio the C++ project system injects the XAML compiler passes
+    (MarkupCompilePass1/2) and the compilation of their generated sources into
+    the build.  A hand-written vcxproj built from the command line has to do
+    that explicitly:
+
+      * references must be resolved first, because the XAML compiler reads
+        @(ReferencePath) - without it it fails with WMC1007;
+      * pass 1 + 2 must run before ClCompile, because they generate the
+        *.xaml.g.h headers the code-behind includes;
+      * the generated sources carry CompilerIteration=XamlGenerated, which the
+        regular ClCompile target skips; CompileXamlGeneratedFiles compiles them
+        instead;
+      * the VC link-input computation skips those items as well, so their
+        objects are added to the link explicitly.
+  -->
+  <PropertyGroup>
+    <MarkupCompilePass1DependsOn>ResolveAssemblyReferences;$(MarkupCompilePass1DependsOn)</MarkupCompilePass1DependsOn>
+  </PropertyGroup>
+
+  <Target Name="CstXamlPasses" BeforeTargets="ClCompile"
+          DependsOnTargets="ResolveAssemblyReferences;MarkupCompilePass1;MarkupCompilePass2">
+    <ItemGroup>
+      <ClCompile Include="@(XamlGFiles->Distinct())" Condition="'%(XamlGFiles.Extension)' == '.cpp'">
+        <CompilerIteration>XamlGenerated</CompilerIteration>
+      </ClCompile>
+      <!-- Pass 2 also emits the per-page implementation headers (they end in an
+           explicit template instantiation) and the metadata provider
+           implementation; a native build compiles them as sources. -->
+      <ClCompile Include="$(IntDir)MainWindow.xaml.g.hpp" Condition="Exists('$(IntDir)MainWindow.xaml.g.hpp')">
+        <CompileAs>CompileAsCpp</CompileAs>
+        <CompilerIteration>XamlGenerated</CompilerIteration>
+      </ClCompile>
+      <ClCompile Include="$(IntDir)XamlTypeInfo.Impl.g.cpp" Condition="Exists('$(IntDir)XamlTypeInfo.Impl.g.cpp')">
+        <CompilerIteration>XamlGenerated</CompilerIteration>
+      </ClCompile>
+      <ClCompile Include="$(IntDir)App.xaml.g.hpp" Condition="Exists('$(IntDir)App.xaml.g.hpp')">
+        <CompileAs>CompileAsCpp</CompileAs>
+        <CompilerIteration>XamlGenerated</CompilerIteration>
+        <!-- The app supplies its own entry point (CLI / GUI dispatch); the
+             generated wWinMain then becomes wXamlGeneratedMain().  The
+             VS-designer DLL exports are meaningless in an executable. -->
+        <PreprocessorDefinitions>DISABLE_XAML_GENERATED_MAIN;_VSDESIGNER_DONT_LOAD_AS_DLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      </ClCompile>
+    </ItemGroup>
+  </Target>
+
+  <Target Name="CstCompileXamlGeneratedSources" AfterTargets="ClCompile" BeforeTargets="Link"
+          DependsOnTargets="CompileXamlGeneratedFiles" />
+
+  <Target Name="CstLinkXamlGeneratedObjects"
+          AfterTargets="CstCompileXamlGeneratedSources" BeforeTargets="Link">
+    <ItemGroup>
+      <CstXamlGeneratedObjects Include="$(IntDir)%(ClCompile.Filename).obj"
+            Condition="'%(ClCompile.CompilerIteration)' == 'XamlGenerated' and ('%(ClCompile.Extension)' == '.cpp' or '%(ClCompile.Extension)' == '.hpp')" />
+      <!-- Inside Visual Studio the project system may have wired the same
+           generated objects into the link already; adding them twice would only
+           produce LNK4042 warnings, but keep the link line clean anyway. -->
+      <CstXamlGeneratedObjects Remove="@(Link)" MatchOnMetadata="FullPath" />
+      <Link Include="@(CstXamlGeneratedObjects->Distinct())" />
+    </ItemGroup>
+  </Target>
+</Project>

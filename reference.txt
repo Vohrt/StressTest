@@ -1,0 +1,26 @@
+# CpuStressTest golden references
+#
+# Each line records the output fingerprint of a known-good run:
+#   <test>\t<params>\t<build>\t<digest>
+#
+# The benchmark recomputes the fingerprint every measurement.  If it does
+# not match, the hardware produced a different result - the signature of an
+# unstable overclock, bad memory or a failing core - and the score is
+# reported as 0 instead of a plausible-looking number.
+#
+# Regenerate with --accept-reference after an intentional change to the
+# build, the workload parameters or the thread count.
+#
+# test	params	build	digest
+aes	AES-256, ECB, buffer=8 MiB/worker, rounds=14, method=VAES-512 (16 blocks); AIDA64 NGAES figure = encryption MiB/s	Oct 16 2026 18:25:18	b769c2e808e34881
+checkmate	16x16 board, factoradic enumeration of the complete 16! permutation space, chunk = 3 ranks (3! = 6 completions), 1 checked position = 1 permutation, 3487131648000 chunks per complete board, module=Base_NGQueen_AVX512_VPOPCNTDQ	Oct 17 2026 11:21:15	e3b9917228080d28
+f32ray	res=1024x1024 ss=1 depth=15 spheres=4 method=Base256_AVX2_FMA3_F32	Oct 17 2026 13:21:05	7e046ffb12e7764f
+f64ray	res=1024x1024 ss=1 depth=15 spheres=4 method=Base256_AVX2_FMA3_F64	Oct 17 2026 13:21:05	effdbc6000812f8
+julia	res=1024x1024 iter=999 rot=pi/400/frame precision=fp32 c=-0.770885+0.1i	Oct 15 2026 22:29:21	4429c7230b456192
+mandel	res=1024x1024 iter=999 rot=pi/400/frame precision=fp64 z0=c=pixel	Oct 15 2026 22:29:21	ac3f0120fd51f0f0
+memlat	chain=512 MiB, nodes=4194304, stride=128 B, page=4 KiB, window=8 MiB (page-random order), align=64 KiB, threads=1 (single-core test), ns/access = seconds*1e9/loads, AIDA64: 2^22 inner reps * 64 dependent loads per timed pass, pinned=1 thread/logical CPU	Oct 16 2026 22:53:54	888d37017d3d85f8
+photoworxx	AIDA64 NGImage2D stages: SWRandom(4096x3072) Rot90(3072x2048) Rot180(3072x2048) Diff(2048x2048) RGB2YUV(3072x2048) VP8YUV(3072x2048) Pattern(4096x3072) Access(4096x3072) Fill(4096x3072) Move(3072x2048); work = stage pixels x 10 so the score is the AIDA64 sum of rates	Oct 16 2026 17:29:46	10b6f211dd65798a
+queen	10x10 board, all 10! = 3628800 column permutations scanned with a byte-lane SIMD diagonal check (cyclic lane rotation, 5 rotations), 1 work unit = 1 candidate board checked (an AIDA64 "position"), 724 solutions per pass	Oct 16 2026 00:02:11	4e70ab907144ee9a
+sha3	SHA3-512 (FIPS 202), rate=72 B, 8 KiB message per round, method=AVX-512 keccak-f1600, 2 messages (AIDA64 auto-picks an AVX-512VL variant)	Oct 16 2026 22:07:52	92b93581683a3a1f
+sinjulia	res=256x256 iter=70 rot=pi/400/frame precision=x87-extended-emulated z'=c*sin(z) c=0.980591+0.450747i	Oct 15 2026 22:29:21	9d85be94894a2325
+zlib	DEFLATE level=9 window=32 KiB chain=4096 lazy=258 nice=258 good=32, 32 KiB Z_SYNC_FLUSH steps, buffer=32 MiB/worker, corpus=NGPack dword-triangular pattern, container=zlib (RFC 1950), module=Base_ZLib_1_2_5	Oct 17 2026 09:22:52	d8a3899700713865

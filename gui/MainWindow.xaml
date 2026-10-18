@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window
+    x:Class="CpuStressTestGui.MainWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="CpuStressTest">
+
+    <Grid Padding="16" RowSpacing="8">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <!-- Filled from cst::cpu_info(); same summary the command line prints. -->
+        <TextBlock x:Name="SysInfoText" Grid.Row="0" TextWrapping="Wrap" Opacity="0.8" FontSize="12" />
+
+        <StackPanel Grid.Row="1" Spacing="6">
+            <StackPanel Orientation="Horizontal" Spacing="8">
+                <Button x:Name="RunButton" Content="运行选中" Click="OnRunSelected" />
+                <Button x:Name="RunAllButton" Content="全部运行" Click="OnRunAll" />
+                <Button x:Name="StopButton" Content="停止" IsEnabled="False" Click="OnStop" />
+                <TextBlock Text="│" Opacity="0.35" VerticalAlignment="Center" />
+                <RadioButton x:Name="SingleRadio" Content="单项" GroupName="RunMode"
+                             IsChecked="True" Checked="OnModeChanged" />
+                <NumberBox x:Name="SecondsBox" Value="15" Minimum="1" Maximum="7200"
+                           SmallChange="1" SpinButtonPlacementMode="Compact" Width="118" />
+                <TextBlock Text="秒" VerticalAlignment="Center" />
+                <RadioButton x:Name="SustainedRadio" Content="持续" GroupName="RunMode"
+                             Checked="OnModeChanged" />
+                <NumberBox x:Name="MinutesBox" Value="20" Minimum="0.5" Maximum="1440"
+                           SmallChange="0.5" SpinButtonPlacementMode="Compact" Width="118" />
+                <TextBlock Text="分钟" VerticalAlignment="Center" />
+                <TextBlock Text="│" Opacity="0.35" VerticalAlignment="Center" />
+                <TextBlock Text="线程" VerticalAlignment="Center" />
+                <NumberBox x:Name="ThreadsBox" Value="0" Minimum="0" Maximum="1024"
+                           SpinButtonPlacementMode="Compact" Width="118" />
+                <TextBlock Text="(0 = 全部逻辑核心)" VerticalAlignment="Center" Opacity="0.7" FontSize="12" />
+            </StackPanel>
+            <StackPanel Orientation="Horizontal" Spacing="12">
+                <CheckBox x:Name="AcceptRefCheck" Content="记录本次为参考" />
+                <CheckBox x:Name="NoVerifyCheck" Content="跳过校验" />
+                <CheckBox x:Name="CsvCheck" Content="写出 CSV" Checked="OnCsvToggled" Unchecked="OnCsvToggled" />
+                <TextBox x:Name="CsvPathBox" Text="results.csv" Width="240" IsEnabled="False" />
+                <Button x:Name="SelectAllButton" Content="全选" Click="OnSelectAll" />
+                <Button x:Name="SelectNoneButton" Content="全不选" Click="OnSelectNone" />
+            </StackPanel>
+        </StackPanel>
+
+        <Grid Grid.Row="2" ColumnSpacing="12">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1.35*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" RowSpacing="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Grid x:Name="HeaderRow" Grid.Row="0" />
+                <Border Grid.Row="1" BorderThickness="1" CornerRadius="4"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto"
+                                  Padding="4">
+                        <StackPanel x:Name="TestRowsPanel" Spacing="1" />
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+
+            <Grid Grid.Column="1" RowSpacing="4">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="LogHeader" Grid.Row="0" Text="日志" FontWeight="SemiBold" Margin="4,0" />
+                <Border Grid.Row="1" BorderThickness="1" CornerRadius="4"
+                        BorderBrush="{ThemeResource CardStrokeColorDefaultBrush}"
+                        Background="{ThemeResource CardBackgroundFillColorDefaultBrush}">
+                    <ScrollViewer x:Name="LogScroll" VerticalScrollBarVisibility="Auto" Padding="8">
+                        <TextBlock x:Name="LogText" FontFamily="Consolas" FontSize="12"
+                                   TextWrapping="NoWrap" IsTextSelectionEnabled="True" LineHeight="16" />
+                    </ScrollViewer>
+                </Border>
+            </Grid>
+        </Grid>
+
+        <StackPanel Grid.Row="3" Spacing="4">
+            <ProgressBar x:Name="RunProgress" Minimum="0" Maximum="1" Value="0" />
+            <TextBlock x:Name="StatusText" Text="就绪" TextWrapping="Wrap" Opacity="0.85" />
+        </StackPanel>
+    </Grid>
+</Window>

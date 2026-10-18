@@ -1,0 +1,193 @@
+CpuStressTest  |  AMD Ryzen 7 9800X3D 8-Core Processor
+  8 physical / 16 logical cores  |  ISA: AVX-512F+AVX-512DQ+VAES+AVX2+FMA3+AES-NI+SHA-NI+SSE4.2
+  mode: single (2.0 seconds)  |  threads: 16
+  verification: on (12 recorded references from reference.txt)
+
+>> running CPU Queen ...
+
+=== CPU Queen (queen) ===
+  workload      : N-Queens on a 10x10 board: all 3,628,800 column permutations (no pruning) screened by a byte-lane SIMD diagonal test, as AIDA64's CPU Queen kernel does
+  parameters    : 10x10 board, all 10! = 3628800 column permutations scanned with a byte-lane SIMD diagonal check (cyclic lane rotation, 5 rotations), 1 work unit = 1 candidate board checked (an AIDA64 "position"), 724 solutions per pass
+  threads       : 16
+  elapsed       : 2.015 s over 1630 repetitions
+  throughput    : 2.935 M kPos/s
+  AIDA64 index  : 2934799.9  [uncalibrated]
+  verification  : matches reference
+                  reference 4e70ab907144ee9a / computed 4e70ab907144ee9a
+
+>> running CPU CheckMate ...
+
+=== CPU CheckMate (checkmate) ===
+  workload      : 16x16 N-Queens: complete 16! permutation space in 3-rank chunks, AIDA64 v7.35 NGQueen AVX512_VPOPCNTDQ semantics
+  parameters    : 16x16 board, factoradic enumeration of the complete 16! permutation space, chunk = 3 ranks (3! = 6 completions), 1 checked position = 1 permutation, 3487131648000 chunks per complete board, module=Base_NGQueen_AVX512_VPOPCNTDQ
+  threads       : 16
+  elapsed       : 2.000 s over 128 repetitions
+  throughput    : 12.97 k MP/s
+  AIDA64 index  : 12965.8  [uncalibrated]
+  verification  : matches reference
+                  reference e3b9917228080d28 / computed e3b9917228080d28
+
+>> running CPU ZLib ...
+
+=== CPU ZLib (zlib) ===
+  workload      : DEFLATE compression of a 32 MiB buffer (zlib 1.2.5 level 9, 32 KiB Z_SYNC_FLUSH steps, Base_ZLib_1_2_5)
+  parameters    : DEFLATE level=9 window=32 KiB chain=4096 lazy=258 nice=258 good=32, 32 KiB Z_SYNC_FLUSH steps, buffer=32 MiB/worker, corpus=NGPack dword-triangular pattern, container=zlib (RFC 1950), module=Base_ZLib_1_2_5
+  threads       : 16
+  elapsed       : 2.355 s over 104 repetitions
+  throughput    : 1.482 k MB/s
+  AIDA64 index  : 1481.9  [uncalibrated]
+  verification  : matches reference
+                  reference d8a3899700713865 / computed d8a3899700713865
+
+>> running CPU AES ...
+
+=== CPU AES (aes) ===
+  workload      : AES-256 ECB encryption of an 8 MiB per-worker buffer, the AIDA64 NGBase_AES layout (rate = completed frames * size / 2^20 / second)
+  parameters    : AES-256, ECB, buffer=8 MiB/worker, rounds=14, method=VAES-512 (16 blocks); AIDA64 NGAES figure = encryption MiB/s
+  threads       : 16
+  elapsed       : 2.101 s over 128 repetitions
+  throughput    : 49.93 k MiB/s
+  AIDA64 index  : 49929.9  [uncalibrated]
+  verification  : matches reference
+                  reference b769c2e808e34881 / computed b769c2e808e34881
+
+>> running CPU SHA3 ...
+
+=== CPU SHA3 (sha3) ===
+  workload      : SHA3-512 over independent 8 KiB messages; rate = completed rounds * 8192 / 2^20 / second (AIDA64 Hash2 layout)
+  parameters    : SHA3-512 (FIPS 202), rate=72 B, 8 KiB message per round, method=AVX-512 keccak-f1600, 2 messages (AIDA64 auto-picks an AVX-512VL variant)
+  threads       : 16
+  elapsed       : 2.000 s over 128 repetitions
+  throughput    : 4.585 k MiB/s
+  AIDA64 index  : 4585.1  [uncalibrated]
+  verification  : matches reference
+                  reference 92b93581683a3a1f / computed 92b93581683a3a1f
+
+>> running CPU PhotoWorxx ...
+  per-stage rates (elapsed 2.000 s, 16 threads):
+    SWRandom    11942.3 MPixel/s
+    Rot90       11087.0 MPixel/s
+    Rot180      11934.4 MPixel/s
+    Diff        11889.9 MPixel/s
+    RGB2YUV      7209.8 MPixel/s
+    VP8YUV       6881.5 MPixel/s
+    Pattern      7923.5 MPixel/s
+    Access          0.0 MPixel/s
+    Fill            0.0 MPixel/s
+    Move            0.0 MPixel/s
+    sum         68868.4 MPixel/s
+
+=== CPU PhotoWorxx (photoworxx) ===
+  workload      : AIDA64 NGImage2D photo pipeline: 10 stages on 2048..4096 wide RGB images (SWRandom/Rot90/Rot180/Diff/RGB2YUV/VP8YUV/Pattern/Access/Fill/Move); the score is the sum of the per-stage rates
+  parameters    : AIDA64 NGImage2D stages: SWRandom(4096x3072) Rot90(3072x2048) Rot180(3072x2048) Diff(2048x2048) RGB2YUV(3072x2048) VP8YUV(3072x2048) Pattern(4096x3072) Access(4096x3072) Fill(4096x3072) Move(3072x2048); work = stage pixels x 10 so the score is the AIDA64 sum of rates
+  threads       : 16
+  elapsed       : 2.001 s over 128 repetitions
+  throughput    : 68.88 k MPixel/s
+  AIDA64 index  : 68878.6  [uncalibrated]
+  verification  : matches reference
+                  reference 10b6f211dd65798a / computed 10b6f211dd65798a
+
+>> running FPU Julia ...
+
+=== FPU Julia (julia) ===
+  workload      : Escape-time iteration z' = z^2 + c, f32 pipeline
+  parameters    : res=1024x1024 iter=999 rot=pi/400/frame precision=fp32 c=-0.770885+0.1i
+  threads       : 16
+  elapsed       : 2.003 s over 9525 repetitions
+  throughput    : 4.987 k MPixel/s
+  AIDA64 index  : 4986.7  [uncalibrated]
+  verification  : matches reference
+                  reference 4429c7230b456192 / computed 4429c7230b456192
+
+>> running FPU Mandel ...
+
+=== FPU Mandel (mandel) ===
+  workload      : Escape-time iteration z' = z^2 + c, f64 pipeline, z0 = c = pixel
+  parameters    : res=1024x1024 iter=999 rot=pi/400/frame precision=fp64 z0=c=pixel
+  threads       : 16
+  elapsed       : 2.007 s over 4689 repetitions
+  throughput    : 2.45 k MPixel/s
+  AIDA64 index  : 2449.8  [uncalibrated]
+  verification  : matches reference
+                  reference ac3f0120fd51f0f0 / computed ac3f0120fd51f0f0
+
+>> running FPU SinJulia ...
+
+=== FPU SinJulia (sinjulia) ===
+  workload      : z' = c*sin(z) Julia variant, extended-precision transcendentals
+  parameters    : res=256x256 iter=70 rot=pi/400/frame precision=x87-extended-emulated z'=c*sin(z) c=0.980591+0.450747i
+  threads       : 16
+  elapsed       : 2.006 s over 4217 repetitions
+  throughput    : 137.7 MPixel/s
+  AIDA64 index  : 137.7  [uncalibrated]
+  verification  : matches reference
+                  reference 9d85be94894a2325 / computed 9d85be94894a2325
+
+>> running FP32 Ray-Trace ...
+
+=== FP32 Ray-Trace (f32ray) ===
+  workload      : Single-precision analytic ray tracer, 8 rays/iteration (AVX2+FMA)
+  parameters    : res=1024x1024 ss=1 depth=15 spheres=4 method=Base256_AVX2_FMA3_F32
+  threads       : 16
+  elapsed       : 2.012 s over 12815 repetitions
+  throughput    : 417.5 k KRay/s
+  AIDA64 index  : 417499.7  [uncalibrated]
+  verification  : matches reference
+                  reference 7e046ffb12e7764f / computed 7e046ffb12e7764f
+
+>> running FP64 Ray-Trace ...
+
+=== FP64 Ray-Trace (f64ray) ===
+  workload      : Double-precision analytic ray tracer, 4 rays/iteration (AVX2+FMA)
+  parameters    : res=1024x1024 ss=1 depth=15 spheres=4 method=Base256_AVX2_FMA3_F64
+  threads       : 16
+  elapsed       : 2.021 s over 5942 repetitions
+  throughput    : 192.7 k KRay/s
+  AIDA64 index  : 192688.9  [calibrated, scale 1, ref 0 KRay/s]
+  verification  : matches reference
+                  reference 0effdbc6000812f8 / computed 0effdbc6000812f8
+
+>> running Memory Read ...
+
+=== Memory Read (memread) ===
+  workload      : One non-temporal (vmovntdqa) sequential pass over a 96 MiB, 64 KiB-aligned buffer per thread
+  parameters    : buffer=96 MiB/thread, align=64 KiB, access=non-temporal (vmovntdqa), data=w[j]=j ramp, fold=xor64+sum64, isa=AVX-512 (8x64B swing), pinned=1 thread/logical CPU
+  threads       : 16
+  elapsed       : 2.016 s over 1229 repetitions
+  throughput    : 61.37 k MB/s
+  AIDA64 index  : 61374.2  [uncalibrated]
+  output digest : baca534f5428bb65  [identical in every repetition]
+
+>> running Memory Write ...
+
+=== Memory Write (memwrite) ===
+  workload      : One pass of non-temporal 64-byte stores (vmovntdq) of an all-zero register over a 96 MiB, 64 KiB-aligned buffer per thread (the data AIDA64's write kernel streams)
+  parameters    : buffer=96 MiB/thread, align=64 KiB, stores=non-temporal (vmovntdq), data=zero register (AIDA64 vpxord shape), fold=sampled 4 KiB/MiB read-back (xor64+sum64), isa=AVX-512 (8x64B swing), pinned=1 thread/logical CPU
+  threads       : 16
+  elapsed       : 2.008 s over 1409 repetitions
+  throughput    : 70.62 k MB/s
+  AIDA64 index  : 70623.7  [uncalibrated]
+  output digest : 88201fb960ff6465  [identical in every repetition]
+
+>> running Memory Copy ...
+
+=== Memory Copy (memcopy) ===
+  workload      : One non-temporal (vmovntdqa/vmovntdq) copy pass of 48 MiB of zero blocks into another 48 MiB, 64 KiB-aligned buffer per thread
+  parameters    : src=48 MiB (zeros, as AIDA64's), dst=48 MiB, align=64 KiB, load=non-temporal (vmovntdqa), store=non-temporal (vmovntdq), isa=AVX-512 (8x64B swing), fold=loaded+sampled 4 KiB/MiB (xor64+sum64), pinned=1 thread/logical CPU
+  threads       : 16
+  elapsed       : 2.011 s over 1394 repetitions
+  throughput    : 34.89 k MB/s
+  AIDA64 index  : 34894.2  [uncalibrated]
+  output digest : 88201fb960ff6465  [identical in every repetition]
+
+>> running Memory Latency ...
+
+=== Memory Latency (memlat) ===
+  workload      : Single-threaded dependent-load pointer chase over a 512 MiB page-random chain (4 KiB pages, 128-byte node stride, 8 MiB shuffle windows, one line per page per pass; AIDA64 NGMemLat band 0)
+  parameters    : chain=512 MiB, nodes=4194304, stride=128 B, page=4 KiB, window=8 MiB (page-random order), align=64 KiB, threads=1 (single-core test), ns/access = seconds*1e9/loads, AIDA64: 2^22 inner reps * 64 dependent loads per timed pass, pinned=1 thread/logical CPU
+  threads       : 1
+  elapsed       : 2.136 s over 6 repetitions
+  throughput    : 84.88 ns (lower is better)
+  AIDA64 index  : 84.9  [uncalibrated]
+  verification  : matches reference
+                  reference 888d37017d3d85f8 / computed 888d37017d3d85f8

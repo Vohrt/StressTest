@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  The measurement engine as a static library: every workload, the reference
+  fingerprints, calibration and the shared measurement session (src/session.cpp)
+  plus the command line front end (src/main.cpp, entry point cst::cli_main).
+
+  It is linked straight into the executable - the GUI uses the very same code
+  the command line does, in-process; there is no second exe and nothing is
+  parsed from console output.
+
+  The translation units are plain C++17 with the exact flags of build.ps1
+  (CppSettings.props: /O2, /arch:AVX2, /fp:precise, /MD, no precompiled header),
+  which is what the recorded reference fingerprints were made with.  The
+  /arch:AVX512 kernels override the ISA per file and are only entered after a
+  CPUID check.
+-->
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{7C3F2A18-5B44-4E0A-9D21-3B6F5A8C0007}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>CpuStressTest</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>cst_engine</ProjectName>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+
+  <PropertyGroup Condition="'$(Configuration)' == 'Debug'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props"
+            Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')"
+            Label="LocalAppDataPlatform" />
+  </ImportGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)CppSettings.props" />
+
+  <PropertyGroup>
+    <OutDir Condition="'$(Configuration)' == 'Release'">$(RepoRoot)build\lib\</OutDir>
+    <OutDir Condition="'$(Configuration)' == 'Debug'">$(RepoRoot)build\lib\debug\</OutDir>
+    <IntDir>$(RepoRoot)build\vs\obj_engine\$(Configuration)\</IntDir>
+  </PropertyGroup>
+
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+  </ItemDefinitionGroup>
+
+  <ItemGroup>
+    <ClCompile Include="..\src\main.cpp" />
+    <ClCompile Include="..\src\session.cpp" />
+    <ClCompile Include="..\src\common.cpp" />
+    <ClCompile Include="..\src\calibration.cpp" />
+    <ClCompile Include="..\src\reference.cpp" />
+    <ClCompile Include="..\src\registry.cpp" />
+    <ClCompile Include="..\src\bench_fp.cpp" />
+    <ClCompile Include="..\src\raytrace.cpp" />
+    <ClCompile Include="..\src\bench_crypto.cpp" />
+    <ClCompile Include="..\src\bench_image.cpp" />
+    <ClCompile Include="..\src\bench_memory.cpp" />
+    <ClCompile Include="..\src\raytrace_avx512.cpp">
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+    </ClCompile>
+    <ClCompile Include="..\src\mem_kernels_avx512.cpp">
+      <EnableEnhancedInstructionSet>AdvancedVectorExtensions512</EnableEnhancedInstructionSet>
+    </ClCompile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <ClInclude Include="..\src\cli.h" />
+    <ClInclude Include="..\src\cst.h" />
+    <ClInclude Include="..\src\session.h" />
+    <ClInclude Include="..\src\calibration.h" />
+    <ClInclude Include="..\src\reference.h" />
+    <ClInclude Include="..\src\common.h" />
+    <ClInclude Include="..\src\registry.h" />
+  </ItemGroup>
+
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
